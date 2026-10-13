@@ -10,7 +10,7 @@ import * as THREE from 'three';
  * - Asfalto escuro realista com meio-fio, faixas duplas amarelas, tracejados brancos e faixas de pedestre
  * - Postes de iluminação pública elegantes ao longo das vias
  * - Edifícios com lobbies no térreo, esquadrias de vidro e infraestrutura de cobertura (HVAC/antenas)
- * - Marcos de Brasília (Congresso Nacional e Catedral) integrados à malha urbana
+ * - Parque urbano arborizado ao redor do campus central SUS AI
  */
 
 // Modelos de Veículos Detalhados
@@ -683,80 +683,6 @@ export default function CityEnvironment() {
           </mesh>
         </group>
       ))}
-
-      {/* ========================================================= */}
-      {/* 8. MARCOS CÍVICOS DE BRASÍLIA INTEGRADOS NA CIDADE        */}
-      {/* ========================================================= */}
-      {/* Congresso Nacional no final do Eixo Monumental Leste */}
-      <group position={[42, 0, -32]}>
-        <mesh receiveShadow position={[0, 0.75, 0]}>
-          <boxGeometry args={[16, 1.5, 6]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.25} />
-        </mesh>
-        {/* Torres H gêmeas */}
-        <mesh position={[-1.2, 5.0, 0]} castShadow>
-          <boxGeometry args={[1.5, 7.5, 2.0]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.2} metalness={0.15} />
-        </mesh>
-        <mesh position={[1.2, 5.0, 0]} castShadow>
-          <boxGeometry args={[1.5, 7.5, 2.0]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.2} metalness={0.15} />
-        </mesh>
-        {/* Passarela */}
-        <mesh position={[0, 6.2, 0]}>
-          <boxGeometry args={[0.9, 0.6, 1.6]} />
-          <meshStandardMaterial color="#0a1b3d" />
-        </mesh>
-        {/* Cúpula Senado */}
-        <mesh position={[-5.0, 1.5, 0]}>
-          <sphereGeometry args={[2.2, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.2} />
-        </mesh>
-        {/* Cúpula Câmara */}
-        <group position={[5.0, 1.6, 0]} rotation={[Math.PI, 0, 0]}>
-          <mesh position={[0, -1.8, 0]}>
-            <sphereGeometry args={[2.5, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
-            <meshStandardMaterial color="#ffffff" roughness={0.2} />
-          </mesh>
-        </group>
-      </group>
-
-      {/* Catedral Metropolitana de Brasília integrada no Setor Cívico */}
-      <group position={[-42, 0, -32]}>
-        <mesh position={[0, 0.08, 0]}>
-          <cylinderGeometry args={[5.5, 5.8, 0.16, 32]} />
-          <meshStandardMaterial color="#1e40af" roughness={0.3} metalness={0.6} />
-        </mesh>
-        {/* Núcleo de vitrais */}
-        <mesh position={[0, 2.6, 0]}>
-          <coneGeometry args={[2.4, 5.0, 24]} />
-          <meshStandardMaterial color="#38bdf8" roughness={0.2} metalness={0.5} />
-        </mesh>
-        {/* 16 Colunas curvas em leque */}
-        {Array.from({ length: 16 }).map((_, i) => {
-          const angle = (i / 16) * Math.PI * 2;
-          return (
-            <mesh
-              key={i}
-              position={[Math.cos(angle) * 3.0, 2.8, Math.sin(angle) * 3.0]}
-              rotation={[0, -angle, 0.16]}
-            >
-              <boxGeometry args={[0.24, 5.6, 0.38]} />
-              <meshStandardMaterial color="#ffffff" roughness={0.2} />
-            </mesh>
-          );
-        })}
-      </group>
-
-      {/* Espelho d'água monumental canalizado */}
-      <mesh receiveShadow position={[0, -0.03, -28]}>
-        <boxGeometry args={[44, 0.02, 6.0]} />
-        <meshStandardMaterial
-          color="#93c5fd"
-          roughness={0.1}
-          metalness={0.6}
-        />
-      </mesh>
     </group>
   );
 }

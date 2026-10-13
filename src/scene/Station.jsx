@@ -166,7 +166,7 @@ export default function Station({
               );
             })}
 
-            {/* Pórtico Escultural Niemeyer Ampliado: Arcos gêmeos de 3.2m de altura */}
+            {/* Pórtico Escultural Ampliado: Arcos gêmeos de 3.2m de altura */}
             {[-1.15, 1.15].map((posX, i) => (
               <group key={i} position={[posX, 1.5, 0]}>
                 <mesh castShadow>
@@ -532,7 +532,7 @@ export default function Station({
               );
             })}
 
-            {/* CÚPULA DE NIEMEYER MONUMENTAL (Museu Nacional de Brasília — Diâmetro 4.4m) */}
+            {/* Cúpula Translúcida do Reator Neural — Diâmetro 4.4m */}
             <mesh position={[0, 0.9, 0]}>
               <sphereGeometry args={[2.1, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2]} />
               <meshPhysicalMaterial
