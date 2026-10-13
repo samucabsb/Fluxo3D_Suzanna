@@ -28,49 +28,49 @@ function HighTechConduit({ segment, isSegmentActive, isCompleted, isSuccess, isB
     return createSegmentCurve(segment.from, segment.to, isBypass);
   }, [segment.from, segment.to, isBypass]);
 
-  const midPoint = useMemo(() => {
-    return curve.getPoint(0.5);
-  }, [curve]);
+  // Pontos de ancoragem e acoplamento ao longo da curva
+  const midPoint = useMemo(() => curve.getPoint(0.5), [curve]);
+  const quarterPointA = useMemo(() => curve.getPoint(0.28), [curve]);
+  const quarterPointB = useMemo(() => curve.getPoint(0.72), [curve]);
 
-  // Geometria estrutural do duto
+  // Geometria estrutural suave do duto de alta definição
   const outerTubeGeo = useMemo(() => {
-    return new THREE.TubeGeometry(curve, 36, isBypass ? 0.05 : 0.07, 12, false);
+    return new THREE.TubeGeometry(curve, 48, isBypass ? 0.055 : 0.075, 16, false);
   }, [curve, isBypass]);
 
   // Núcleo luminoso interno
   const innerCoreGeo = useMemo(() => {
-    return new THREE.TubeGeometry(curve, 36, isBypass ? 0.025 : 0.035, 8, false);
+    return new THREE.TubeGeometry(curve, 48, isBypass ? 0.028 : 0.038, 10, false);
   }, [curve, isBypass]);
 
   // Identidade cromática SUS Digital
   const { outerColor, coreColor, coreEmissive, opacity } = useMemo(() => {
     if (isError) {
-      return { outerColor: '#dc2626', coreColor: '#fca5a5', coreEmissive: 1.2, opacity: 0.95 };
+      return { outerColor: '#dc2626', coreColor: '#fca5a5', coreEmissive: 1.6, opacity: 0.95 };
     }
     if (isBypass) {
       if (isSegmentActive) {
-        return { outerColor: '#d97706', coreColor: '#fde047', coreEmissive: 1.4, opacity: 0.95 };
+        return { outerColor: '#d97706', coreColor: '#fde047', coreEmissive: 1.8, opacity: 0.95 };
       }
       if (isCompleted) {
-        return { outerColor: '#b45309', coreColor: '#fbbf24', coreEmissive: 0.8, opacity: 0.85 };
+        return { outerColor: '#b45309', coreColor: '#fbbf24', coreEmissive: 1.0, opacity: 0.85 };
       }
-      return { outerColor: '#dbeafe', coreColor: '#bfdbfe', coreEmissive: 0.1, opacity: 0.2 };
+      return { outerColor: '#dbeafe', coreColor: '#bfdbfe', coreEmissive: 0.15, opacity: 0.25 };
     }
     if (isSegmentActive) {
-      // Azul Primário SUS Digital ativo
-      return { outerColor: '#1e40af', coreColor: '#60a5fa', coreEmissive: 1.5, opacity: 0.95 };
+      // Azul Primário SUS Digital ativo com brilho intenso
+      return { outerColor: '#1e40af', coreColor: '#60a5fa', coreEmissive: 2.2, opacity: 0.95 };
     }
     if (isCompleted) {
-      // Verde apenas quando a resposta foi de fato entregue; caso contrário azul de trecho percorrido
       return isSuccess
-        ? { outerColor: '#15803d', coreColor: '#4ade80', coreEmissive: 0.8, opacity: 0.85 }
-        : { outerColor: '#1e40af', coreColor: '#93c5fd', coreEmissive: 0.6, opacity: 0.85 };
+        ? { outerColor: '#15803d', coreColor: '#4ade80', coreEmissive: 1.1, opacity: 0.85 }
+        : { outerColor: '#1e40af', coreColor: '#93c5fd', coreEmissive: 0.8, opacity: 0.85 };
     }
     if (isWarning) {
-      return { outerColor: '#d97706', coreColor: '#fcd34d', coreEmissive: 0.8, opacity: 0.75 };
+      return { outerColor: '#d97706', coreColor: '#fcd34d', coreEmissive: 1.0, opacity: 0.75 };
     }
     // Inativo / Disponível em azul-gelo translúcido
-    return { outerColor: '#93c5fd', coreColor: '#dbeafe', coreEmissive: 0.1, opacity: 0.35 };
+    return { outerColor: '#93c5fd', coreColor: '#dbeafe', coreEmissive: 0.2, opacity: 0.4 };
   }, [isBypass, isSegmentActive, isCompleted, isSuccess, isWarning, isError]);
 
   return (
@@ -79,46 +79,60 @@ function HighTechConduit({ segment, isSegmentActive, isCompleted, isSuccess, isB
       <mesh geometry={outerTubeGeo} receiveShadow>
         <meshPhysicalMaterial
           color={outerColor}
-          roughness={0.15}
-          metalness={0.1}
-          transmission={0.6}
-          thickness={0.4}
+          roughness={0.12}
+          metalness={0.15}
+          transmission={0.65}
+          thickness={0.45}
           ior={1.45}
           transparent
           opacity={opacity}
         />
       </mesh>
 
-      {/* 2. Núcleo óptico condutor de dados emissivo */}
+      {/* 2. Núcleo óptico condutor de dados altamente emissivo */}
       <mesh geometry={innerCoreGeo}>
         <meshStandardMaterial
           color={coreColor}
           emissive={coreColor}
           emissiveIntensity={coreEmissive}
-          roughness={0.1}
+          roughness={0.08}
         />
       </mesh>
 
-      {/* 3. Suporte vertical estrutural no piso com anel metálico */}
+      {/* 3. Suporte vertical estrutural central no piso */}
       <group position={[midPoint.x, midPoint.y / 2, midPoint.z]}>
         <mesh castShadow receiveShadow>
-          <cylinderGeometry args={[0.04, 0.065, midPoint.y, 16]} />
+          <cylinderGeometry args={[0.045, 0.07, midPoint.y, 16]} />
           <meshStandardMaterial color="#0a1b3d" roughness={0.3} metalness={0.8} />
         </mesh>
         <mesh position={[0, midPoint.y / 4, 0]}>
-          <cylinderGeometry args={[0.075, 0.075, 0.04, 16]} />
+          <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
           <meshStandardMaterial color="#1e40af" roughness={0.2} metalness={0.9} />
         </mesh>
       </group>
 
-      {/* 4. Pulso de energia luminoso quando ativo */}
+      {/* 4. Anéis de acoplamento óptico ao longo da tubulação */}
+      {[quarterPointA, quarterPointB].map((pt, i) => (
+        <group key={i} position={[pt.x, pt.y, pt.z]}>
+          <mesh>
+            <sphereGeometry args={[isBypass ? 0.065 : 0.085, 12, 12]} />
+            <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
+          </mesh>
+          <mesh>
+            <sphereGeometry args={[isBypass ? 0.045 : 0.055, 8, 8]} />
+            <meshBasicMaterial color={coreColor} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* 5. Pulso de energia luminoso quando ativo */}
       {isSegmentActive && (
         <mesh geometry={outerTubeGeo}>
           <meshBasicMaterial
             color={coreColor}
             wireframe
             transparent
-            opacity={0.35}
+            opacity={0.4}
           />
         </mesh>
       )}

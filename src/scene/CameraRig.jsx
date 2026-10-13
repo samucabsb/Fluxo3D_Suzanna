@@ -3,7 +3,7 @@ import { OrbitControls } from '@react-three/drei';
 import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export const DEFAULT_CAMERA_POS = [18, 16.5, 18];
+export const DEFAULT_CAMERA_POS = [22, 19, 22];
 export const DEFAULT_TARGET_POS = [0, 0.5, 0];
 
 /**
@@ -74,7 +74,7 @@ export default function CameraRig({ resetSignal, focusTarget = null }) {
       maxPolarAngle={Math.PI / 2.15} // Não desce abaixo da plataforma
       minPolarAngle={Math.PI / 6}
       minDistance={10}
-      maxDistance={40}
+      maxDistance={55}
       onStart={() => {
         gliding.current = false; // usuário assumiu o controle: nada disputa a câmera
       }}

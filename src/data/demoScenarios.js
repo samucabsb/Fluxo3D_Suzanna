@@ -194,8 +194,8 @@ export const STATIONS_METADATA = [
     description: 'Ponto inicial por onde a pergunta do cidadão em linguagem natural entra no ecossistema da Susana.',
     details: 'Recebe o texto enviado pelo usuário ou aplicativo de chat, registra o identificador de sessão e prepara o pacote para validação de escopo e sanitização de dados.',
     tourNote: 'Aqui o cidadão envia a pergunta. A Susana recebe a mensagem em linguagem natural e inicia a sessão.',
-    position: [-9.0, 0, 3.8],
-    cameraTarget: [-9.0, 1.2, 3.8],
+    position: [-12.0, 0, 4.8],
+    cameraTarget: [-12.0, 1.4, 4.8],
     color: '#0284c7', // Sky Blue
     icon: 'MessageSquare'
   },
@@ -208,8 +208,8 @@ export const STATIONS_METADATA = [
     description: 'Avalia se a consulta está dentro das diretrizes de saúde pública do DF e protege contra pedidos de diagnóstico ou prescrição.',
     details: 'Analisa intenção e segurança clínica. Se o usuário pedir diagnóstico médico ou remédios, o fluxo é desviado imediatamente para acolhimento preventivo sem invocar recuperação documental livre.',
     tourNote: 'Triagem de segurança: A Susana verifica se a dúvida é sobre acesso a serviços. Perguntas sobre diagnósticos ou remédios são barradas aqui por ética.',
-    position: [-4.6, 0, 1.8],
-    cameraTarget: [-4.6, 1.3, 1.8],
+    position: [-6.0, 0, 2.2],
+    cameraTarget: [-6.0, 1.4, 2.2],
     color: '#0d9488', // Teal
     icon: 'ShieldCheck'
   },
@@ -222,8 +222,8 @@ export const STATIONS_METADATA = [
     description: 'Módulo central de recuperação de documentos oficiais da SES-DF e IgesDF indexados com embeddings vetoriais (dimensão 768).',
     details: 'Consulta o PostgreSQL + pgvector utilizando o modelo nomic-embed-text. Identifica trechos com maior proximidade semântica para embasar a resposta com evidências verificáveis.',
     tourNote: 'Busca semântica: O sistema localiza trechos em documentos oficiais da SES-DF. Se não houver evidências suficientes, a IA não inventará respostas.',
-    position: [-2.0, 0, -4.2],
-    cameraTarget: [-2.0, 1.5, -4.2],
+    position: [-2.5, 0, -5.5],
+    cameraTarget: [-2.5, 1.6, -5.5],
     color: '#6366f1', // Indigo
     icon: 'Database'
   },
@@ -236,8 +236,8 @@ export const STATIONS_METADATA = [
     description: 'Instância do modelo llama3.2:3b executada localmente via Ollama que sintetiza o texto a partir do contexto recuperado.',
     details: 'Recebe a pergunta original acrescida dos trechos de evidência recuperados (Prompt Aumentado). O modelo é instruído a não inventar dados e sintetizar a resposta com linguagem clara e acessível.',
     tourNote: 'Síntese aumentada: O modelo Llama 3.2 formula a resposta estritamente ancorado nos trechos recuperados na etapa anterior.',
-    position: [2.4, 0, -0.4],
-    cameraTarget: [2.4, 1.6, -0.4],
+    position: [3.2, 0, -0.5],
+    cameraTarget: [3.2, 1.8, -0.5],
     color: '#8b5cf6', // Violet
     icon: 'Cpu'
   },
@@ -250,8 +250,8 @@ export const STATIONS_METADATA = [
     description: 'Etapa que associa as fontes oficiais recuperadas à resposta final para que o cidadão possa auditá-las criticamente.',
     details: 'Exibe URLs, títulos de documentos oficiais, órgãos emissores e trechos utilizados. Lembra o visitante de que ter referências não garante verdade absoluta e incentiva o pensamento crítico.',
     tourNote: 'Transparência de fontes: Os links e portais oficiais são vinculados para que o cidadão possa conferir e exercer seu pensamento crítico.',
-    position: [6.0, 0, -3.6],
-    cameraTarget: [6.0, 1.4, -3.6],
+    position: [8.0, 0, -4.8],
+    cameraTarget: [8.0, 1.5, -4.8],
     color: '#10b981', // Emerald
     icon: 'BookOpenCheck'
   },
@@ -264,8 +264,8 @@ export const STATIONS_METADATA = [
     description: 'Apresenta a resposta final ao usuário, categorizada claramente conforme o desfecho da execução.',
     details: 'Diferencia com precisão respostas fundamentadas, abstenções por falta de evidências oficiais, recusas éticas fora do escopo ou avisos de contingência.',
     tourNote: 'Entrega final: A resposta é apresentada com a indicação clara do seu desfecho (fontes associadas, evidências insuficientes ou fora de escopo).',
-    position: [9.2, 0, 2.6],
-    cameraTarget: [9.2, 1.3, 2.6],
+    position: [12.5, 0, 3.4],
+    cameraTarget: [12.5, 1.4, 3.4],
     color: '#0f766e', // Deep Teal
     icon: 'Send'
   }

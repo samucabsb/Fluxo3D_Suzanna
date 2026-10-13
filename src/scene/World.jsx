@@ -93,9 +93,9 @@ export default function World({
           <ContactShadows
             position={[0, 0.045, 0]}
             opacity={0.16}
-            scale={28}
-            blur={2.0}
-            far={3}
+            scale={36}
+            blur={2.2}
+            far={3.5}
             color="#1e3a8a"
           />
 

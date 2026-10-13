@@ -10,12 +10,12 @@ import { STATIONS_METADATA } from '../data/demoScenarios';
  */
 export default function Ground() {
   const walkways = [
-    { from: [-9.0, 3.8], to: [-4.6, 1.8] },      // Input -> Scope
-    { from: [-4.6, 1.8], to: [-2.0, -4.2] },     // Scope -> Retrieval
-    { from: [-2.0, -4.2], to: [2.4, -0.4] },     // Retrieval -> Generation
-    { from: [2.4, -0.4], to: [6.0, -3.6] },      // Generation -> Evidence
-    { from: [6.0, -3.6], to: [9.2, 2.6] },       // Evidence -> Output
-    { from: [-4.6, 1.8], to: [9.2, 2.6], bypass: true } // Scope -> Output Bypass
+    { from: [-12.0, 4.8], to: [-6.0, 2.2] },      // Input -> Scope
+    { from: [-6.0, 2.2], to: [-2.5, -5.5] },     // Scope -> Retrieval
+    { from: [-2.5, -5.5], to: [3.2, -0.5] },     // Retrieval -> Generation
+    { from: [3.2, -0.5], to: [8.0, -4.8] },      // Generation -> Evidence
+    { from: [8.0, -4.8], to: [12.5, 3.4] },      // Evidence -> Output
+    { from: [-6.0, 2.2], to: [12.5, 3.4], bypass: true } // Scope -> Output Bypass
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function Ground() {
       {/* ========================================================= */}
       {/* Base sólida de porcelana branca polida */}
       <mesh receiveShadow position={[0, 0.04, 0]}>
-        <boxGeometry args={[26.0, 0.16, 20.0]} />
+        <boxGeometry args={[33.0, 0.16, 23.0]} />
         <meshStandardMaterial
           color="#ffffff"
           roughness={0.25}
@@ -35,7 +35,7 @@ export default function Ground() {
 
       {/* Chanfro perimetral em Azul Profundo SUS (#1e40af) */}
       <mesh position={[0, 0.015, 0]}>
-        <boxGeometry args={[26.4, 0.08, 20.4]} />
+        <boxGeometry args={[33.4, 0.08, 23.4]} />
         <meshStandardMaterial
           color="#1e40af"
           roughness={0.3}
@@ -45,20 +45,20 @@ export default function Ground() {
 
       {/* Friso perimetral luminoso embutido */}
       <group position={[0, 0.125, 0]}>
-        <mesh position={[0, 0, -9.95]}>
-          <boxGeometry args={[25.8, 0.01, 0.05]} />
+        <mesh position={[0, 0, -11.45]}>
+          <boxGeometry args={[32.8, 0.01, 0.05]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
-        <mesh position={[0, 0, 9.95]}>
-          <boxGeometry args={[25.8, 0.01, 0.05]} />
+        <mesh position={[0, 0, 11.45]}>
+          <boxGeometry args={[32.8, 0.01, 0.05]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
-        <mesh position={[-12.95, 0, 0]}>
-          <boxGeometry args={[0.05, 0.01, 19.8]} />
+        <mesh position={[-16.45, 0, 0]}>
+          <boxGeometry args={[0.05, 0.01, 22.8]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
-        <mesh position={[12.95, 0, 0]}>
-          <boxGeometry args={[0.05, 0.01, 19.8]} />
+        <mesh position={[16.45, 0, 0]}>
+          <boxGeometry args={[0.05, 0.01, 22.8]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
       </group>

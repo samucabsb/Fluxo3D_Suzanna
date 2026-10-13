@@ -24,6 +24,10 @@ export default function FlowParticle({
   const groupRef = useRef();
   const innerMeshRef = useRef();
   const auraRef = useRef();
+  const trailRef0 = useRef();
+  const trailRef1 = useRef();
+  const trailRef2 = useRef();
+  const trailRef3 = useRef();
 
   // Progresso geométrico único (0..1) da execução. Só useFrame escreve aqui.
   const progressRef = useRef(0);
@@ -91,14 +95,25 @@ export default function FlowParticle({
     const hoverOffset = idle ? Math.sin(state.clock.elapsedTime * 2.5) * 0.04 : 0;
     groupRef.current.position.set(p.x, p.y + 0.38 + hoverOffset, p.z);
 
+    // Cauda de cometa luminosa que segue a trajetória
+    const trails = [trailRef0, trailRef1, trailRef2, trailRef3];
+    trails.forEach((tRef, idx) => {
+      if (!tRef.current) return;
+      const trailOffset = (idx + 1) * 0.018;
+      const trailProgress = Math.max(0, progressRef.current - trailOffset);
+      const tp = route.getPointAt(trailProgress);
+      tRef.current.position.set(tp.x, tp.y + 0.38, tp.z);
+      tRef.current.visible = isRunning && progressRef.current > 0.008;
+    });
+
     if (!REDUCED_MOTION) {
       if (innerMeshRef.current) {
-        innerMeshRef.current.rotation.y += delta * 2.5;
-        innerMeshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2) * 0.15;
+        innerMeshRef.current.rotation.y += delta * 2.8;
+        innerMeshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2.5) * 0.2;
       }
       if (auraRef.current) {
-        auraRef.current.rotation.z += delta * 1.2;
-        auraRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 4) * 0.08);
+        auraRef.current.rotation.z += delta * 1.5;
+        auraRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 5) * 0.1);
       }
     }
   });
@@ -114,54 +129,81 @@ export default function FlowParticle({
   }, [execution?.status, execution?.scopeData?.allowed, execution?.outputData?.status]);
 
   return (
-    <group ref={groupRef} position={[-9.0, 0.64, 3.8]}>
-      {/* 1. Núcleo cristalino em formato de octaedro com alta refração */}
-      <mesh ref={innerMeshRef} castShadow>
-        <octahedronGeometry args={[0.25, 0]} />
-        <meshStandardMaterial
-          color={particleColor}
-          emissive={particleColor}
-          emissiveIntensity={1.4}
-          roughness={0.12}
-          metalness={0.88}
-        />
+    <>
+      {/* 1. Cauda de Cometa Luminosa com 4 Nodos em Gradiente */}
+      <mesh ref={trailRef0} visible={false}>
+        <sphereGeometry args={[0.16, 16, 16]} />
+        <meshBasicMaterial color={particleColor} transparent opacity={0.75} />
+      </mesh>
+      <mesh ref={trailRef1} visible={false}>
+        <sphereGeometry args={[0.12, 12, 12]} />
+        <meshBasicMaterial color={particleColor} transparent opacity={0.55} />
+      </mesh>
+      <mesh ref={trailRef2} visible={false}>
+        <sphereGeometry args={[0.08, 10, 10]} />
+        <meshBasicMaterial color={particleColor} transparent opacity={0.35} />
+      </mesh>
+      <mesh ref={trailRef3} visible={false}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshBasicMaterial color={particleColor} transparent opacity={0.2} />
       </mesh>
 
-      {/* 2. Duplo anel giroscópico de contenção de dados clínicos */}
-      <mesh ref={auraRef} rotation={[Math.PI / 4, 0, 0]}>
-        <torusGeometry args={[0.4, 0.02, 16, 36]} />
-        <meshBasicMaterial
-          color={particleColor}
-          transparent
-          opacity={0.7}
-        />
-      </mesh>
-      <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
-        <torusGeometry args={[0.34, 0.015, 16, 32]} />
-        <meshBasicMaterial
-          color="#ffffff"
-          transparent
-          opacity={0.5}
-        />
-      </mesh>
+      {/* 2. Pacote de Dados Principal */}
+      <group ref={groupRef} position={[-12.0, 0.64, 4.8]}>
+        {/* Núcleo cristalino em octaedro de alta refração */}
+        <mesh ref={innerMeshRef} castShadow>
+          <octahedronGeometry args={[0.26, 0]} />
+          <meshStandardMaterial
+            color={particleColor}
+            emissive={particleColor}
+            emissiveIntensity={2.2}
+            roughness={0.1}
+            metalness={0.9}
+          />
+        </mesh>
 
-      {/* 3. Aura esférica de bio-energia de saúde */}
-      <mesh>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshBasicMaterial
-          color={particleColor}
-          wireframe
-          transparent
-          opacity={0.25}
-        />
-      </mesh>
+        {/* Faísca central branca pura de alta luminosidade */}
+        <mesh>
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
 
-      {/* 4. Luz pontual contextual de iluminação do duto */}
-      <pointLight
-        color={particleColor}
-        intensity={2.4}
-        distance={3.6}
-      />
-    </group>
+        {/* Duplo anel giroscópico de contenção clínica */}
+        <mesh ref={auraRef} rotation={[Math.PI / 4, 0, 0]}>
+          <torusGeometry args={[0.42, 0.025, 16, 36]} />
+          <meshBasicMaterial
+            color={particleColor}
+            transparent
+            opacity={0.8}
+          />
+        </mesh>
+        <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
+          <torusGeometry args={[0.35, 0.018, 16, 32]} />
+          <meshBasicMaterial
+            color="#ffffff"
+            transparent
+            opacity={0.65}
+          />
+        </mesh>
+
+        {/* Aura esférica de bio-energia de saúde */}
+        <mesh>
+          <sphereGeometry args={[0.32, 16, 16]} />
+          <meshBasicMaterial
+            color={particleColor}
+            wireframe
+            transparent
+            opacity={0.3}
+          />
+        </mesh>
+
+        {/* Luz pontual contextual de iluminação do trajeto */}
+        <pointLight
+          color={particleColor}
+          intensity={3.8}
+          distance={5.0}
+        />
+      </group>
+    </>
   );
 }
