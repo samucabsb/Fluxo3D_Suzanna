@@ -3,13 +3,15 @@ import * as THREE from 'three';
 import { STATIONS_METADATA } from '../data/demoScenarios';
 
 /**
- * Campus Arquitetônico SUS Digital: "Saúde pública, clara como água."
+ * Ground — Esplanada Monumental Contínua do SUS Digital e Brasília
  * 
- * 1. Esplanada Superior em Porcelana Acetinada Pura (#ffffff / #f8fafc)
- * 2. Cruz da Saúde do SUS gravada no piso com iluminação de bio-LED (Esmeralda & Ciano)
- * 3. Molduras chanfradas em Azul Profundo (#1e40af) e friso perimetral luminoso (#38bdf8)
- * 4. Vias de circulação pavimentadas com canaletas de luz de dados
- * 5. Plintos dedicados de alta precisão para cada estação
+ * 1. Chão contínuo e infinito: Plano monumental que se estende por 600 metros,
+ *    eliminando qualquer sensação de plataforma suspensa ou corte no vazio.
+ * 2. Espelhos d'água integrados (Niemeyer): Bacias reflexivas rasas embutidas diretamente
+ *    no piso da esplanada com bordas de mármore técnico branco puro e canais LED.
+ * 3. Cruz da Saúde do SUS Monumental gravada no piso com bio-LED esmeralda e ciano.
+ * 4. Vias de circulação pavimentadas de alta precisão entre as 6 estações.
+ * 5. Plintos dedicados e imponentes para ancorar os modelos de grande escala.
  */
 export default function Ground() {
   const walkways = [
@@ -24,191 +26,164 @@ export default function Ground() {
   return (
     <group position={[0, 0, 0]}>
       {/* ========================================================= */}
-      {/* 1. ESPLANADA PRINCIPAL — PORCELANA TÉCNICA BRANCA PURA    */}
+      {/* 1. CHÃO CONTÍNUO E MONUMENTAL (600m x 600m)              */}
       {/* ========================================================= */}
-      {/* Topo nivelado exatamente em y = 0.0 */}
-      <mesh receiveShadow position={[0, -0.2, 0]}>
-        <boxGeometry args={[26.0, 0.4, 20.0]} />
+      <mesh receiveShadow position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[600, 600]} />
         <meshStandardMaterial
-          color="#fcfdfd"
-          roughness={0.28}
-          metalness={0.04}
+          color="#f8fafc"
+          roughness={0.32}
+          metalness={0.05}
         />
       </mesh>
 
-      {/* ASA OESTE — Píer de Acesso do Cidadão (Entrada da Ingestão) */}
-      <group position={[-16.5, -0.22, 3.8]}>
-        <mesh receiveShadow position={[0, 0, 0]}>
-          <boxGeometry args={[7.2, 0.36, 4.2]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.05} />
-        </mesh>
-        <mesh position={[0, -0.04, 0]}>
-          <boxGeometry args={[7.4, 0.08, 4.4]} />
-          <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
-        </mesh>
-        {/* Frisos de LED nas margens do píer */}
-        <mesh position={[0, 0.19, 2.12]}>
-          <boxGeometry args={[7.2, 0.02, 0.05]} />
-          <meshBasicMaterial color="#38bdf8" />
-        </mesh>
-        <mesh position={[0, 0.19, -2.12]}>
-          <boxGeometry args={[7.2, 0.02, 0.05]} />
-          <meshBasicMaterial color="#38bdf8" />
-        </mesh>
-        {/* Pilares do Píer Oeste no leito do lago */}
-        {[-2.4, 2.4].map((px, i) => (
-          <mesh key={i} position={[px, -0.85, 0]}>
-            <cylinderGeometry args={[0.32, 0.38, 1.4, 16]} />
-            <meshStandardMaterial color="#ffffff" roughness={0.4} />
-          </mesh>
-        ))}
-      </group>
+      {/* Grid arquitetônico de precisão milimétrica contínuo no piso */}
+      <gridHelper
+        args={[400, 100, '#bfdbfe', '#e2e8f0']}
+        position={[0, 0.001, 0]}
+      />
 
-      {/* ASA LESTE — Promenada de Conexão com o Distrito Federal (Saída da Resposta) */}
-      <group position={[16.5, -0.22, 2.6]}>
-        <mesh receiveShadow position={[0, 0, 0]}>
-          <boxGeometry args={[7.2, 0.36, 4.2]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.05} />
-        </mesh>
-        <mesh position={[0, -0.04, 0]}>
-          <boxGeometry args={[7.4, 0.08, 4.4]} />
-          <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
-        </mesh>
-        {/* Frisos de LED nas margens da promenada */}
-        <mesh position={[0, 0.19, 2.12]}>
-          <boxGeometry args={[7.2, 0.02, 0.05]} />
-          <meshBasicMaterial color="#38bdf8" />
-        </mesh>
-        <mesh position={[0, 0.19, -2.12]}>
-          <boxGeometry args={[7.2, 0.02, 0.05]} />
-          <meshBasicMaterial color="#38bdf8" />
-        </mesh>
-        {/* Pilares da Promenada Leste */}
-        {[-2.4, 2.4].map((px, i) => (
-          <mesh key={i} position={[px, -0.85, 0]}>
-            <cylinderGeometry args={[0.32, 0.38, 1.4, 16]} />
-            <meshStandardMaterial color="#ffffff" roughness={0.4} />
-          </mesh>
-        ))}
-      </group>
-
-      {/* MIRANTE NORTE — Terraço Semicircular debruçado sobre o Lago */}
-      <group position={[0, -0.22, -10.0]}>
-        <mesh receiveShadow position={[0, 0, 0]}>
-          <cylinderGeometry args={[4.4, 4.6, 0.36, 32, 1, false, Math.PI, Math.PI]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.28} metalness={0.05} />
-        </mesh>
-        <mesh position={[0, -0.04, 0]}>
-          <cylinderGeometry args={[4.55, 4.7, 0.08, 32, 1, false, Math.PI, Math.PI]} />
-          <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
-        </mesh>
-        <mesh position={[0, 0.19, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[4.3, 4.42, 32, 1, 0, Math.PI]} />
-          <meshBasicMaterial color="#38bdf8" />
-        </mesh>
-        {/* Pilar central do mirante */}
-        <mesh position={[0, -0.85, -2.5]}>
-          <cylinderGeometry args={[0.45, 0.52, 1.4, 24]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.4} />
-        </mesh>
-      </group>
-
-      {/* Moldura chanfrada intermediária da esplanada central em Azul Profundo SUS (#1e40af) */}
-      <mesh position={[0, -0.24, 0]}>
-        <boxGeometry args={[26.4, 0.1, 20.4]} />
+      {/* ========================================================= */}
+      {/* 2. PRAÇA CENTRAL CÍVICA DO SUS (Área das Estações)       */}
+      {/* ========================================================= */}
+      {/* Tablado sutil de porcelana técnica polida com chanfro bisotado */}
+      <mesh receiveShadow position={[0, 0.005, 0]}>
+        <boxGeometry args={[32.0, 0.02, 24.0]} />
+        <meshStandardMaterial
+          color="#ffffff"
+          roughness={0.22}
+          metalness={0.06}
+        />
+      </mesh>
+      {/* Moldura em Azul Profundo SUS (#1e40af) ao redor da praça central */}
+      <mesh position={[0, 0.004, 0]}>
+        <boxGeometry args={[32.4, 0.012, 24.4]} />
         <meshStandardMaterial
           color="#1e40af"
           roughness={0.25}
           metalness={0.7}
         />
       </mesh>
-
-      {/* Rodapé estrutural da esplanada em Titânio Escovado Ink (#0a1b3d) */}
-      <mesh position={[0, -0.34, 0]}>
-        <boxGeometry args={[26.8, 0.12, 20.8]} />
-        <meshStandardMaterial
-          color="#0a1b3d"
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </mesh>
-
-      {/* Friso perimetral contínuo em fita de LED Azul Ciano ao redor de toda a esplanada */}
-      <group position={[0, 0.004, 0]}>
-        {/* Borda Norte */}
-        <mesh position={[0, 0, -9.96]}>
-          <boxGeometry args={[25.8, 0.008, 0.06]} />
+      {/* Fita perimetral de LED Ciano contínua embutida no piso */}
+      <group position={[0, 0.016, 0]}>
+        <mesh position={[0, 0, -12.18]}>
+          <boxGeometry args={[32.2, 0.008, 0.06]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
-        {/* Borda Sul */}
-        <mesh position={[0, 0, 9.96]}>
-          <boxGeometry args={[25.8, 0.008, 0.06]} />
+        <mesh position={[0, 0, 12.18]}>
+          <boxGeometry args={[32.2, 0.008, 0.06]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
-        {/* Borda Oeste */}
-        <mesh position={[-12.96, 0, 0]}>
-          <boxGeometry args={[0.06, 0.008, 19.8]} />
+        <mesh position={[-16.18, 0, 0]}>
+          <boxGeometry args={[0.06, 0.008, 24.2]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
-        {/* Borda Leste */}
-        <mesh position={[12.96, 0, 0]}>
-          <boxGeometry args={[0.06, 0.008, 19.8]} />
+        <mesh position={[16.18, 0, 0]}>
+          <boxGeometry args={[0.06, 0.008, 24.2]} />
           <meshBasicMaterial color="#38bdf8" />
         </mesh>
       </group>
 
-      {/* Grid arquitetônico milimétrico sutil impresso no piso de porcelana */}
-      <gridHelper
-        args={[25, 25, '#93c5fd', '#e2e8f0']}
-        position={[0, 0.002, 0]}
-      />
-
       {/* ========================================================= */}
-      {/* 2. CRUZ DA SAÚDE DO SUS (GRAVADA NO PISO DA ESPLANADA)    */}
+      {/* 3. ESPELHOS D'ÁGUA INTEGRADORES (Embutidos no Piso)       */}
       {/* ========================================================= */}
-      <group position={[0.5, 0.003, -0.2]}>
-        {/* Braço horizontal da Cruz da Saúde em vidro jateado claro */}
+      {/* Espelho d'Água Norte (Diante do Congresso e Catedral) */}
+      <group position={[0, 0.008, -17.5]}>
+        {/* Lâmina líquida */}
         <mesh receiveShadow position={[0, 0, 0]}>
-          <boxGeometry args={[8.8, 0.005, 2.2]} />
+          <boxGeometry args={[30.0, 0.015, 6.0]} />
           <meshStandardMaterial
-            color="#f0fdf4"
-            roughness={0.4}
-            metalness={0.1}
+            color="#cbe2fe"
+            roughness={0.12}
+            metalness={0.4}
           />
         </mesh>
-        {/* Braço vertical da Cruz da Saúde em vidro jateado claro */}
+        {/* Moldura de mármore branco em volta da água */}
+        <mesh position={[0, 0.01, -3.05]}>
+          <boxGeometry args={[30.4, 0.03, 0.2]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
+        </mesh>
+        <mesh position={[0, 0.01, 3.05]}>
+          <boxGeometry args={[30.4, 0.03, 0.2]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
+        </mesh>
+        {/* Friso luminoso de LED azul na água */}
+        <mesh position={[0, 0.018, 0]}>
+          <boxGeometry args={[29.6, 0.005, 0.04]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+      </group>
+
+      {/* Espelho d'Água Sul (Fronteira com os Jardins) */}
+      <group position={[0, 0.008, 17.5]}>
         <mesh receiveShadow position={[0, 0, 0]}>
-          <boxGeometry args={[2.2, 0.005, 8.8]} />
+          <boxGeometry args={[30.0, 0.015, 6.0]} />
           <meshStandardMaterial
-            color="#f0fdf4"
-            roughness={0.4}
-            metalness={0.1}
+            color="#cbe2fe"
+            roughness={0.12}
+            metalness={0.4}
           />
         </mesh>
-
-        {/* Fitas LED internas da Cruz em Verde Esmeralda da Saúde (#10b981) */}
-        <mesh position={[0, 0.002, 0]}>
-          <boxGeometry args={[8.4, 0.004, 0.04]} />
-          <meshBasicMaterial color="#10b981" opacity={0.65} transparent />
+        <mesh position={[0, 0.01, -3.05]}>
+          <boxGeometry args={[30.4, 0.03, 0.2]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
         </mesh>
-        <mesh position={[0, 0.002, 0]}>
-          <boxGeometry args={[0.04, 0.004, 8.4]} />
-          <meshBasicMaterial color="#10b981" opacity={0.65} transparent />
+        <mesh position={[0, 0.01, 3.05]}>
+          <boxGeometry args={[30.4, 0.03, 0.2]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
         </mesh>
-
-        {/* Anel central de bio-energia com pulso de acolhimento SUS */}
-        <mesh position={[0, 0.003, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[1.3, 1.48, 36]} />
-          <meshBasicMaterial color="#0284c7" opacity={0.55} transparent />
-        </mesh>
-        <mesh position={[0, 0.003, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[1.56, 1.64, 36]} />
-          <meshBasicMaterial color="#10b981" opacity={0.4} transparent />
+        <mesh position={[0, 0.018, 0]}>
+          <boxGeometry args={[29.6, 0.005, 0.04]} />
+          <meshBasicMaterial color="#38bdf8" />
         </mesh>
       </group>
 
       {/* ========================================================= */}
-      {/* 3. VIAS DE CIRCULAÇÃO PAVIMENTADAS E GUIAS LUMINOSAS      */}
+      {/* 4. CRUZ DA SAÚDE DO SUS (GRAVADA NO CENTRO DA PRAÇA)     */}
+      {/* ========================================================= */}
+      <group position={[0.5, 0.018, -0.2]}>
+        {/* Braço horizontal em vidro jateado */}
+        <mesh receiveShadow position={[0, 0, 0]}>
+          <boxGeometry args={[9.6, 0.006, 2.4]} />
+          <meshStandardMaterial
+            color="#f0fdf4"
+            roughness={0.35}
+            metalness={0.1}
+          />
+        </mesh>
+        {/* Braço vertical em vidro jateado */}
+        <mesh receiveShadow position={[0, 0, 0]}>
+          <boxGeometry args={[2.4, 0.006, 9.6]} />
+          <meshStandardMaterial
+            color="#f0fdf4"
+            roughness={0.35}
+            metalness={0.1}
+          />
+        </mesh>
+
+        {/* Fitas LED internas em Verde Saúde (#10b981) */}
+        <mesh position={[0, 0.004, 0]}>
+          <boxGeometry args={[9.2, 0.004, 0.05]} />
+          <meshBasicMaterial color="#10b981" opacity={0.75} transparent />
+        </mesh>
+        <mesh position={[0, 0.004, 0]}>
+          <boxGeometry args={[0.05, 0.004, 9.2]} />
+          <meshBasicMaterial color="#10b981" opacity={0.75} transparent />
+        </mesh>
+
+        {/* Anéis concêntricos de bio-acolhimento SUS */}
+        <mesh position={[0, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[1.4, 1.58, 36]} />
+          <meshBasicMaterial color="#0284c7" opacity={0.65} transparent />
+        </mesh>
+        <mesh position={[0, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[1.68, 1.76, 36]} />
+          <meshBasicMaterial color="#10b981" opacity={0.5} transparent />
+        </mesh>
+      </group>
+
+      {/* ========================================================= */}
+      {/* 5. VIAS DE CIRCULAÇÃO PAVIMENTADAS E GUIAS LUMINOSAS      */}
       {/* ========================================================= */}
       {walkways.map((w, idx) => {
         const dx = w.to[0] - w.from[0];
@@ -217,39 +192,39 @@ export default function Ground() {
         const angle = Math.atan2(dz, dx);
         const midX = (w.from[0] + w.to[0]) / 2;
         const midZ = (w.from[1] + w.to[1]) / 2;
-        const width = w.bypass ? 0.75 : 0.95;
+        const width = w.bypass ? 0.85 : 1.1;
 
         return (
-          <group key={idx} position={[midX, 0.015, midZ]} rotation={[0, -angle, 0]}>
-            {/* Faixa pavimentada em porcelana clara */}
+          <group key={idx} position={[midX, 0.02, midZ]} rotation={[0, -angle, 0]}>
+            {/* Faixa pavimentada clara */}
             <mesh receiveShadow position={[0, 0, 0]}>
               <boxGeometry args={[length, 0.015, width]} />
               <meshStandardMaterial
                 color={w.bypass ? '#fffbeb' : '#ffffff'}
-                roughness={0.5}
+                roughness={0.4}
                 metalness={0.08}
               />
             </mesh>
             {/* Guias laterais em Azul Gelo com reflexo */}
             <mesh position={[0, 0.012, width / 2]}>
-              <boxGeometry args={[length, 0.014, 0.04]} />
+              <boxGeometry args={[length, 0.014, 0.05]} />
               <meshStandardMaterial color="#93c5fd" roughness={0.25} metalness={0.6} />
             </mesh>
             <mesh position={[0, 0.012, -width / 2]}>
-              <boxGeometry args={[length, 0.014, 0.04]} />
+              <boxGeometry args={[length, 0.014, 0.05]} />
               <meshStandardMaterial color="#93c5fd" roughness={0.25} metalness={0.6} />
             </mesh>
             {/* Linha central guia de fluxo */}
             <mesh position={[0, 0.01, 0]}>
-              <boxGeometry args={[length * 0.92, 0.005, 0.04]} />
-              <meshBasicMaterial color={w.bypass ? '#d97706' : '#38bdf8'} opacity={0.75} transparent />
+              <boxGeometry args={[length * 0.94, 0.005, 0.05]} />
+              <meshBasicMaterial color={w.bypass ? '#d97706' : '#38bdf8'} opacity={0.8} transparent />
             </mesh>
           </group>
         );
       })}
 
       {/* ========================================================= */}
-      {/* 4. PLINTOS ARQUITETÔNICOS DAS 6 ESTAÇÕES                  */}
+      {/* 6. PLINTOS IMPONENTES DAS 6 ESTAÇÕES                      */}
       {/* ========================================================= */}
       {STATIONS_METADATA.map((station) => {
         const [x, , z] = station.position;
@@ -257,90 +232,90 @@ export default function Ground() {
         switch (station.id) {
           case 'input':
             return (
-              <group key={station.id} position={[x, 0.01, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.06, 0]}>
-                  <boxGeometry args={[3.4, 0.12, 3.4]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+              <group key={station.id} position={[x, 0.02, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.07, 0]}>
+                  <boxGeometry args={[3.8, 0.14, 3.8]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
                 </mesh>
                 <mesh position={[0, 0.01, 0]}>
-                  <boxGeometry args={[3.7, 0.02, 3.7]} />
+                  <boxGeometry args={[4.1, 0.02, 4.1]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
-                <mesh position={[0, 0.125, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[1.45, 1.55, 36]} />
-                  <meshBasicMaterial color="#38bdf8" opacity={0.7} transparent />
+                <mesh position={[0, 0.145, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[1.65, 1.78, 36]} />
+                  <meshBasicMaterial color="#38bdf8" opacity={0.75} transparent />
                 </mesh>
               </group>
             );
 
           case 'scope':
             return (
-              <group key={station.id} position={[x, 0.01, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.07, 0]}>
-                  <cylinderGeometry args={[2.0, 2.15, 0.14, 8]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+              <group key={station.id} position={[x, 0.02, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.08, 0]}>
+                  <cylinderGeometry args={[2.3, 2.45, 0.16, 8]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
                 </mesh>
                 <mesh position={[0, 0.01, 0]}>
-                  <cylinderGeometry args={[2.25, 2.25, 0.02, 8]} />
+                  <cylinderGeometry args={[2.55, 2.55, 0.02, 8]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
-                <mesh position={[0, 0.145, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[1.75, 1.88, 8]} />
-                  <meshBasicMaterial color="#0284c7" opacity={0.6} transparent />
+                <mesh position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[2.0, 2.15, 8]} />
+                  <meshBasicMaterial color="#0284c7" opacity={0.65} transparent />
                 </mesh>
               </group>
             );
 
           case 'retrieval':
             return (
-              <group key={station.id} position={[x, 0.01, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.08, 0]}>
-                  <boxGeometry args={[3.8, 0.16, 3.8]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+              <group key={station.id} position={[x, 0.02, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.09, 0]}>
+                  <boxGeometry args={[4.4, 0.18, 4.4]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
                 </mesh>
                 <mesh position={[0, 0.01, 0]}>
-                  <boxGeometry args={[4.1, 0.02, 4.1]} />
+                  <boxGeometry args={[4.7, 0.02, 4.7]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
-                <mesh receiveShadow position={[0, 0.165, 0]}>
-                  <boxGeometry args={[3.2, 0.03, 3.2]} />
-                  <meshStandardMaterial color="#f0fdf4" roughness={0.4} metalness={0.1} />
+                <mesh receiveShadow position={[0, 0.185, 0]}>
+                  <boxGeometry args={[3.8, 0.03, 3.8]} />
+                  <meshStandardMaterial color="#f0fdf4" roughness={0.35} metalness={0.1} />
                 </mesh>
               </group>
             );
 
           case 'generation':
             return (
-              <group key={station.id} position={[x, 0.01, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.09, 0]}>
-                  <cylinderGeometry args={[2.4, 2.6, 0.18, 36]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.28} metalness={0.12} />
+              <group key={station.id} position={[x, 0.02, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.1, 0]}>
+                  <cylinderGeometry args={[2.8, 3.0, 0.2, 36]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.12} />
                 </mesh>
                 <mesh position={[0, 0.01, 0]}>
-                  <cylinderGeometry args={[2.75, 2.75, 0.02, 36]} />
+                  <cylinderGeometry args={[3.2, 3.2, 0.02, 36]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
-                <mesh position={[0, 0.185, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[2.1, 2.25, 48]} />
-                  <meshBasicMaterial color="#38bdf8" opacity={0.65} transparent />
+                <mesh position={[0, 0.205, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[2.5, 2.68, 48]} />
+                  <meshBasicMaterial color="#38bdf8" opacity={0.7} transparent />
                 </mesh>
               </group>
             );
 
           case 'evidence':
             return (
-              <group key={station.id} position={[x, 0.01, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.08, 0]}>
-                  <boxGeometry args={[3.4, 0.16, 3.2]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+              <group key={station.id} position={[x, 0.02, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.09, 0]}>
+                  <boxGeometry args={[4.0, 0.18, 3.8]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
                 </mesh>
                 <mesh position={[0, 0.01, 0]}>
-                  <boxGeometry args={[3.7, 0.02, 3.5]} />
+                  <boxGeometry args={[4.3, 0.02, 4.1]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
-                <mesh position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[1.35, 1.48, 32]} />
-                  <meshBasicMaterial color="#10b981" opacity={0.6} transparent />
+                <mesh position={[0, 0.185, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[1.6, 1.74, 32]} />
+                  <meshBasicMaterial color="#10b981" opacity={0.65} transparent />
                 </mesh>
               </group>
             );
@@ -348,18 +323,18 @@ export default function Ground() {
           case 'output':
           default:
             return (
-              <group key={station.id} position={[x, 0.01, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.07, 0]}>
-                  <cylinderGeometry args={[1.7, 1.85, 0.14, 36]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+              <group key={station.id} position={[x, 0.02, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.08, 0]}>
+                  <cylinderGeometry args={[2.0, 2.2, 0.16, 36]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
                 </mesh>
                 <mesh position={[0, 0.01, 0]}>
-                  <cylinderGeometry args={[2.0, 2.0, 0.02, 36]} />
+                  <cylinderGeometry args={[2.35, 2.35, 0.02, 36]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
-                <mesh position={[0, 0.145, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[1.4, 1.52, 36]} />
-                  <meshBasicMaterial color="#0284c7" opacity={0.6} transparent />
+                <mesh position={[0, 0.165, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[1.7, 1.84, 36]} />
+                  <meshBasicMaterial color="#0284c7" opacity={0.65} transparent />
                 </mesh>
               </group>
             );

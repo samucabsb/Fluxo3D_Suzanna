@@ -127,7 +127,7 @@ export default function BrasiliaArchitecture() {
       {/* ========================================================= */}
       {/* 2. CONGRESSO NACIONAL (Silhueta Monumental no Horizonte)  */}
       {/* ========================================================= */}
-      <group position={[18, -1.8, -38]}>
+      <group position={[24, 0, -42]}>
         {/* Base / Plinto monumental horizontal */}
         <mesh position={[0, 0.6, 0]} receiveShadow>
           <boxGeometry args={[14.0, 1.2, 5.0]} />
@@ -185,7 +185,7 @@ export default function BrasiliaArchitecture() {
       {/* ========================================================= */}
       {/* 3. CATEDRAL METROPOLITANA (Escultura Hiperbólica ao Fundo)*/}
       {/* ========================================================= */}
-      <group position={[-24, -1.8, -34]}>
+      <group position={[-26, 0, -38]}>
         {/* Espelho d'água circular da Catedral */}
         <mesh position={[0, 0.05, 0]}>
           <cylinderGeometry args={[5.2, 5.5, 0.1, 36]} />
@@ -237,7 +237,7 @@ export default function BrasiliaArchitecture() {
       {/* ========================================================= */}
       {/* 4. PONTE JK (Arcos Parabólicos Esculturais no Horizonte)  */}
       {/* ========================================================= */}
-      <group position={[32, -1.8, 8]} rotation={[0, -0.45, 0]}>
+      <group position={[36, 0, 8]} rotation={[0, -0.45, 0]}>
         {/* Pista sobre a água */}
         <mesh position={[0, 0.45, 0]}>
           <boxGeometry args={[18, 0.2, 2.2]} />
@@ -265,11 +265,11 @@ export default function BrasiliaArchitecture() {
       </group>
 
       {/* ========================================================= */}
-      {/* 5. JARDINS DE BURLE MARX (Paisagismo Orgânico na Água)    */}
+      {/* 5. JARDINS DE BURLE MARX (Paisagismo Orgânico no Solo)    */}
       {/* ========================================================= */}
-      <group position={[0, -1.78, 0]}>
+      <group position={[0, 0, 0]}>
         {/* Canteiro Sinuoso 1 - Lateral Sudoeste */}
-        <group position={[-16, 0, 11]}>
+        <group position={[-18, 0, 13]}>
           <mesh receiveShadow position={[0, 0.04, 0]}>
             <cylinderGeometry args={[3.5, 4.2, 0.08, 32]} />
             <meshStandardMaterial color="#f8fafc" roughness={0.5} />

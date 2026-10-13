@@ -4,13 +4,29 @@ import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
+ * RAG Document Chunks recuperados da base vetorial do SUS-DF
+ * Chunks reais representam trechos de documentos oficiais indexados com pgvector (768d)
+ */
+const RAG_CHUNKS_DATA = [
+  { id: 'c1', title: 'UPA Samambaia Sul — QS 107', score: '0.941', x: -1.7, y: 1.2, z: 0.9, rotY: 0.35 },
+  { id: 'c2', title: 'Protocolo Manchester SES-DF', score: '0.884', x: 1.7, y: 1.3, z: 0.9, rotY: -0.35 },
+  { id: 'c3', title: 'Semob-DF Linhas 0.053/0.394', score: '0.851', x: 0.0, y: 2.2, z: 1.5, rotY: 0.0 },
+  { id: 'c4', title: 'IgesDF Atendimento 24h', score: '0.912', x: -1.9, y: 1.9, z: -0.2, rotY: 0.65 },
+  { id: 'c5', title: 'pgvector 768d nomic-embed', score: '0.975', x: 1.9, y: 2.0, z: -0.2, rotY: -0.65 },
+  { id: 'c6', title: 'Portaria SES-DF nº 142/2024', score: '0.890', x: -1.4, y: 2.6, z: 0.7, rotY: 0.25 },
+  { id: 'c7', title: 'Guia Rede Urgência DF', score: '0.933', x: 1.4, y: 2.7, z: 0.6, rotY: -0.25 },
+  { id: 'c8', title: 'Central SAMU 192 DF', score: '0.865', x: -0.7, y: 2.9, z: 1.2, rotY: 0.15 },
+  { id: 'c9', title: 'Hospital Regional Taguatinga', score: '0.842', x: 0.7, y: 3.0, z: 1.2, rotY: -0.15 },
+  { id: 'c10', title: 'Farmácia de Alto Custo', score: '0.820', x: -1.9, y: 0.7, z: 0.5, rotY: 0.45 },
+  { id: 'c11', title: 'UBS 1 Samambaia Sul', score: '0.878', x: 1.9, y: 0.8, z: 0.5, rotY: -0.45 },
+  { id: 'c12', title: 'Triagem Clínica Preventiva', score: '0.905', x: 0.0, y: 0.7, z: 1.5, rotY: 0.0 },
+  { id: 'c13', title: 'Classificação Risco Amarela', score: '0.925', x: -1.0, y: 1.7, z: 1.5, rotY: 0.2 },
+  { id: 'c14', title: 'Central Regulação Leitos', score: '0.880', x: 1.0, y: 1.8, z: 1.5, rotY: -0.2 },
+];
+
+/**
  * Estações Arquitetônicas SUS Digital — Padrão High-End / Overkill
- * Modelagem industrial e escultural inspirada em Oscar Niemeyer e hardware futurista:
- * - Camadas de porcelana técnica polida (#ffffff)
- * - Molduras em Titânio Azul Profundo (#1e40af) e Ink (#0a1b3d)
- * - Vidro óptico com refração e canaletas de luz LED
- * - Componentes mecânicos: aletas de dissipação, bobinas de levitação, anéis cardânicos
- * - Etiquetas contextuais com contraste total e legibilidade imediata
+ * Modelos monumentais ampliados, rico detalhamento mecânico e matriz de chunks RAG em massa.
  */
 export default function Station({
   station,
@@ -61,7 +77,7 @@ export default function Station({
         accent: '#1e40af',        // Azul Profundo
         darkStructure: '#0a1b3d', // Ink
         glass: '#e0f2fe',         // Azul Gelo
-        emissiveIntensity: 1.2
+        emissiveIntensity: 1.3
       };
     }
     if (status === 'completed') {
@@ -73,7 +89,7 @@ export default function Station({
         accent: isSuccess ? '#15803d' : '#1e40af',
         darkStructure: '#0a1b3d',
         glass: isSuccess ? '#dcfce7' : '#dbeafe',
-        emissiveIntensity: 0.8
+        emissiveIntensity: 0.9
       };
     }
     if (status === 'warning') {
@@ -84,7 +100,7 @@ export default function Station({
         accent: '#b45309',
         darkStructure: '#0a1b3d',
         glass: '#fef3c7',
-        emissiveIntensity: 0.8
+        emissiveIntensity: 0.9
       };
     }
     if (status === 'skipped') {
@@ -106,94 +122,95 @@ export default function Station({
       accent: '#1e40af',
       darkStructure: '#0a1b3d',
       glass: '#e0f2fe',
-      emissiveIntensity: 0.35
+      emissiveIntensity: 0.4
     };
   }, [status, isActive, execution?.outputData?.status]);
 
+  // Altura calibrada das etiquetas acima dos modelos maiores
   const labelHeight = useMemo(() => {
     switch (station.id) {
-      case 'input': return 3.1;
-      case 'scope': return 3.0;
-      case 'retrieval': return 3.4;
-      case 'generation': return 3.6;
-      case 'evidence': return 3.1;
-      case 'output': return 3.2;
-      default: return 3.1;
+      case 'input': return 3.6;
+      case 'scope': return 3.5;
+      case 'retrieval': return 4.3;
+      case 'generation': return 4.6;
+      case 'evidence': return 3.7;
+      case 'output': return 4.1;
+      default: return 3.6;
     }
   }, [station.id]);
 
-  // Modelagem tridimensional rica e detalhada das 6 estações
+  // Renderização arquitetônica ampliada e detalhada das 6 estações
   const renderStationArchitecture = () => {
     switch (station.id) {
       case 'input':
-        // 1. Entrada da Pergunta: Pórtico Monumental com console holográfico do cidadão
+        // 1. Entrada da Pergunta: Grande Pórtico Monumental de Acolhimento
         return (
           <group position={[0, 0.12, 0]}>
-            {/* Plinto de base escalonado de 3 níveis */}
-            <mesh castShadow receiveShadow position={[0, 0.2, 0]}>
-              <cylinderGeometry args={[1.3, 1.55, 0.4, 36]} />
+            {/* Plinto de base escalonado amplo */}
+            <mesh castShadow receiveShadow position={[0, 0.22, 0]}>
+              <cylinderGeometry args={[1.65, 1.95, 0.44, 36]} />
               <meshStandardMaterial color={stateColors.pillar} roughness={0.25} metalness={0.1} />
             </mesh>
-            <mesh position={[0, 0.42, 0]}>
-              <cylinderGeometry args={[1.2, 1.25, 0.08, 36]} />
+            <mesh position={[0, 0.46, 0]}>
+              <cylinderGeometry args={[1.5, 1.55, 0.08, 36]} />
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
-            {/* Anel perimetral com dissipadores de calor em micro-aletas */}
-            {Array.from({ length: 12 }).map((_, i) => {
-              const angle = (i / 12) * Math.PI * 2;
+            {/* 16 aletas perimetrais de dissipação mecânica */}
+            {Array.from({ length: 16 }).map((_, i) => {
+              const angle = (i / 16) * Math.PI * 2;
               return (
-                <mesh key={i} position={[Math.cos(angle) * 1.35, 0.22, Math.sin(angle) * 1.35]} rotation={[0, -angle, 0]}>
-                  <boxGeometry args={[0.04, 0.24, 0.12]} />
+                <mesh key={i} position={[Math.cos(angle) * 1.7, 0.24, Math.sin(angle) * 1.7]} rotation={[0, -angle, 0]}>
+                  <boxGeometry args={[0.04, 0.28, 0.15]} />
                   <meshStandardMaterial color="#0a1b3d" roughness={0.3} metalness={0.8} />
                 </mesh>
               );
             })}
 
-            {/* Pórtico Escultural Niemeyer: Duas colunas aerodinâmicas curvas em titânio */}
-            {[-0.85, 0.85].map((posX, i) => (
-              <group key={i} position={[posX, 1.2, 0]}>
+            {/* Pórtico Escultural Niemeyer Ampliado: Arcos gêmeos de 3.2m de altura */}
+            {[-1.15, 1.15].map((posX, i) => (
+              <group key={i} position={[posX, 1.5, 0]}>
                 <mesh castShadow>
-                  <boxGeometry args={[0.18, 1.8, 0.28]} />
+                  <boxGeometry args={[0.24, 2.6, 0.36]} />
                   <meshStandardMaterial color="#ffffff" roughness={0.25} metalness={0.1} />
                 </mesh>
-                {/* Friso embutido de fibra óptica azul nos pilares */}
-                <mesh position={[posX > 0 ? -0.1 : 0.1, 0, 0]}>
-                  <boxGeometry args={[0.03, 1.7, 0.06]} />
+                {/* Canal de fibra óptica de LED vertical */}
+                <mesh position={[posX > 0 ? -0.13 : 0.13, 0, 0]}>
+                  <boxGeometry args={[0.035, 2.5, 0.08]} />
                   <meshBasicMaterial color={stateColors.glow} />
                 </mesh>
-                {/* Colar metálico de engaste */}
-                <mesh position={[0, -0.85, 0]}>
-                  <boxGeometry args={[0.26, 0.1, 0.34]} />
+                {/* Colar metálico de fixação na base */}
+                <mesh position={[0, -1.2, 0]}>
+                  <boxGeometry args={[0.34, 0.14, 0.44]} />
                   <meshStandardMaterial color="#0a1b3d" roughness={0.3} metalness={0.8} />
                 </mesh>
               </group>
             ))}
 
-            {/* Viga de leitura superior com scanner óptico */}
-            <mesh castShadow position={[0, 2.12, 0]}>
-              <boxGeometry args={[1.95, 0.18, 0.32]} />
+            {/* Viga transversal monumental com scanner volumétrico */}
+            <mesh castShadow position={[0, 2.8, 0]}>
+              <boxGeometry args={[2.6, 0.24, 0.42]} />
               <meshStandardMaterial color="#0a1b3d" roughness={0.25} metalness={0.8} />
             </mesh>
-            <mesh position={[0, 2.02, 0]}>
-              <boxGeometry args={[1.6, 0.03, 0.08]} />
+            <mesh position={[0, 2.66, 0]}>
+              <boxGeometry args={[2.2, 0.04, 0.12]} />
               <meshBasicMaterial color={stateColors.glow} />
             </mesh>
 
-            {/* Console de interação com display de vidro curvo */}
-            <group position={[0, 0.72, 0.5]}>
-              {/* Pedestal do console */}
-              <mesh castShadow position={[0, -0.15, 0]}>
-                <cylinderGeometry args={[0.14, 0.22, 0.45, 16]} />
+            {/* Console Tátil do Cidadão Ampliado */}
+            <group position={[0, 0.85, 0.7]}>
+              {/* Pedestal chanfrado */}
+              <mesh castShadow position={[0, -0.22, 0]}>
+                <cylinderGeometry args={[0.18, 0.3, 0.6, 16]} />
                 <meshStandardMaterial color="#1e40af" roughness={0.3} metalness={0.6} />
               </mesh>
-              {/* Mesa de comando */}
-              <mesh castShadow position={[0, 0.1, 0]} rotation={[-0.35, 0, 0]}>
-                <boxGeometry args={[0.8, 0.45, 0.08]} />
+              {/* Mesa de comando ampla */}
+              <mesh castShadow position={[0, 0.12, 0]} rotation={[-0.35, 0, 0]}>
+                <boxGeometry args={[1.2, 0.65, 0.1]} />
                 <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
               </mesh>
-              {/* Tela holográfica de toque */}
-              <mesh position={[0, 0.11, 0.045]} rotation={[-0.35, 0, 0]}>
-                <planeGeometry args={[0.72, 0.38]} />
+              {/* Display holográfico panorâmico */}
+              <mesh position={[0, 0.13, 0.055]} rotation={[-0.35, 0, 0]}>
+                <planeGeometry args={[1.08, 0.55]} />
                 <meshPhysicalMaterial
                   color="#dbeafe"
                   roughness={0.1}
@@ -203,17 +220,17 @@ export default function Station({
                   opacity={0.85}
                 />
               </mesh>
-              {/* Leitor de Cartão SUS / Biometria com LED verde */}
-              <mesh position={[0.26, 0.12, 0.05]} rotation={[-0.35, 0, 0]}>
-                <circleGeometry args={[0.045, 16]} />
+              {/* Leitor biométrico de Cartão SUS iluminado */}
+              <mesh position={[0.42, 0.14, 0.06]} rotation={[-0.35, 0, 0]}>
+                <circleGeometry args={[0.07, 16]} />
                 <meshBasicMaterial color="#10b981" />
               </mesh>
             </group>
 
-            {/* Núcleo de Admissão de Dados Flutuante com duplo anel giroscópico */}
-            <group ref={innerRef} position={[0, 1.35, 0]}>
+            {/* Núcleo de Admissão de Pergunta: Octaedro com anéis giroscópicos ampliados */}
+            <group ref={innerRef} position={[0, 1.75, 0]}>
               <mesh castShadow>
-                <octahedronGeometry args={[0.3, 0]} />
+                <octahedronGeometry args={[0.42, 0]} />
                 <meshStandardMaterial
                   color={stateColors.base}
                   emissive={stateColors.base}
@@ -223,11 +240,11 @@ export default function Station({
                 />
               </mesh>
               <mesh ref={auxiliaryRef} rotation={[Math.PI / 4, 0, 0]}>
-                <torusGeometry args={[0.45, 0.025, 16, 36]} />
+                <torusGeometry args={[0.62, 0.035, 16, 36]} />
                 <meshBasicMaterial color={stateColors.glow} transparent opacity={0.7} />
               </mesh>
               <mesh ref={secondaryRotatorRef} rotation={[-Math.PI / 4, 0, 0]}>
-                <torusGeometry args={[0.38, 0.018, 16, 32]} />
+                <torusGeometry args={[0.52, 0.025, 16, 32]} />
                 <meshStandardMaterial color="#ffffff" metalness={0.9} roughness={0.1} />
               </mesh>
             </group>
@@ -235,49 +252,50 @@ export default function Station({
         );
 
       case 'scope':
-        // 2. Controle de Escopo: Anel Colisor de Biossegurança com Escudo Bioético
+        // 2. Controle de Escopo: Câmara de Confinamento Octogonal & Escudo Bioético
         return (
           <group position={[0, 0.14, 0]}>
-            {/* Base octogonal chanfrada de precisão */}
-            <mesh castShadow receiveShadow position={[0, 0.22, 0]}>
-              <cylinderGeometry args={[1.35, 1.6, 0.44, 8]} />
+            {/* Base octogonal chanfrada de grande porte */}
+            <mesh castShadow receiveShadow position={[0, 0.24, 0]}>
+              <cylinderGeometry args={[1.75, 2.05, 0.48, 8]} />
               <meshStandardMaterial color={stateColors.pillar} roughness={0.25} metalness={0.12} />
             </mesh>
-            <mesh position={[0, 0.46, 0]}>
-              <cylinderGeometry args={[1.28, 1.32, 0.08, 8]} />
+            <mesh position={[0, 0.5, 0]}>
+              <cylinderGeometry args={[1.65, 1.7, 0.08, 8]} />
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
 
-            {/* 4 Torres perimétricas de contenção diagnóstica */}
-            {[-0.95, 0.95].map((posX, i) =>
-              [-0.4, 0.4].map((posZ, j) => (
-                <group key={`${i}-${j}`} position={[posX, 1.1, posZ]}>
+            {/* 6 Torres perimétricas de contenção diagnóstica */}
+            {Array.from({ length: 6 }).map((_, i) => {
+              const angle = (i / 6) * Math.PI * 2;
+              const px = Math.cos(angle) * 1.45;
+              const pz = Math.sin(angle) * 1.45;
+              return (
+                <group key={i} position={[px, 1.35, pz]}>
                   <mesh castShadow>
-                    <cylinderGeometry args={[0.09, 0.12, 1.6, 16]} />
+                    <cylinderGeometry args={[0.11, 0.15, 2.1, 16]} />
                     <meshStandardMaterial color="#0a1b3d" roughness={0.25} metalness={0.8} />
                   </mesh>
-                  {/* Fita de luz no fuste da torre */}
-                  <mesh position={[posX > 0 ? -0.1 : 0.1, 0, 0]}>
-                    <boxGeometry args={[0.02, 1.4, 0.03]} />
+                  <mesh position={[0, 0, 0]}>
+                    <boxGeometry args={[0.025, 1.8, 0.04]} />
                     <meshBasicMaterial color={stateColors.glow} />
                   </mesh>
-                  {/* Ponteira emissora de laser no topo */}
-                  <mesh position={[0, 0.85, 0]}>
-                    <sphereGeometry args={[0.07, 16, 16]} />
+                  <mesh position={[0, 1.1, 0]}>
+                    <sphereGeometry args={[0.09, 16, 16]} />
                     <meshBasicMaterial color={stateColors.glow} />
                   </mesh>
                 </group>
-              ))
-            )}
+              );
+            })}
 
-            {/* Escudo Protetor Parabólico de Vidro Óptico */}
-            <mesh castShadow position={[0, 1.15, -0.55]}>
-              <cylinderGeometry args={[1.25, 1.25, 1.3, 32, 1, true, -Math.PI / 3, (2 * Math.PI) / 3]} />
+            {/* Escudo Protetor Parabólico de Vidro Óptico Ampliado */}
+            <mesh castShadow position={[0, 1.4, -0.65]}>
+              <cylinderGeometry args={[1.65, 1.65, 1.7, 32, 1, true, -Math.PI / 3, (2 * Math.PI) / 3]} />
               <meshPhysicalMaterial
                 color="#dbeafe"
                 roughness={0.1}
                 transmission={0.8}
-                thickness={0.8}
+                thickness={0.9}
                 ior={1.45}
                 transparent
                 opacity={0.85}
@@ -285,31 +303,31 @@ export default function Station({
               />
             </mesh>
 
-            {/* Cruz Médica Bioética em LED no centro do escudo */}
-            <group position={[0, 1.15, -0.48]}>
+            {/* Cruz Médica Bioética em LED Ampliada */}
+            <group position={[0, 1.4, -0.56]}>
               <mesh>
-                <boxGeometry args={[0.5, 0.14, 0.02]} />
+                <boxGeometry args={[0.65, 0.18, 0.025]} />
                 <meshBasicMaterial
                   color={status === 'warning' ? '#fbbf24' : '#10b981'}
-                  opacity={0.9}
+                  opacity={0.95}
                   transparent
                 />
               </mesh>
               <mesh>
-                <boxGeometry args={[0.14, 0.5, 0.02]} />
+                <boxGeometry args={[0.18, 0.65, 0.025]} />
                 <meshBasicMaterial
                   color={status === 'warning' ? '#fbbf24' : '#10b981'}
-                  opacity={0.9}
+                  opacity={0.95}
                   transparent
                 />
               </mesh>
             </group>
 
-            {/* Núcleo Giroscópico de Triagem Tri-axial */}
-            <group ref={innerRef} position={[0, 1.35, 0]}>
+            {/* Núcleo Giroscópico de Triagem Tri-axial Ampliado */}
+            <group ref={innerRef} position={[0, 1.6, 0]}>
               {/* Anel Cardânico 1 */}
               <mesh castShadow>
-                <torusGeometry args={[0.68, 0.06, 16, 40]} />
+                <torusGeometry args={[0.88, 0.075, 16, 40]} />
                 <meshStandardMaterial
                   color={stateColors.base}
                   emissive={stateColors.base}
@@ -320,21 +338,21 @@ export default function Station({
               </mesh>
               {/* Anel Cardânico 2 */}
               <mesh ref={auxiliaryRef} rotation={[Math.PI / 3, 0, 0]}>
-                <torusGeometry args={[0.52, 0.04, 16, 36]} />
+                <torusGeometry args={[0.68, 0.05, 16, 36]} />
                 <meshStandardMaterial color="#1e40af" roughness={0.2} metalness={0.9} />
               </mesh>
               {/* Anel Cardânico 3 */}
               <mesh ref={secondaryRotatorRef} rotation={[0, Math.PI / 4, Math.PI / 4]}>
-                <torusGeometry args={[0.38, 0.025, 16, 32]} />
+                <torusGeometry args={[0.48, 0.03, 16, 32]} />
                 <meshStandardMaterial color="#ffffff" roughness={0.15} metalness={0.95} />
               </mesh>
-              {/* Esfera diagnóstica de plasma no centro */}
+              {/* Esfera central de plasma */}
               <mesh>
-                <sphereGeometry args={[0.18, 16, 16]} />
+                <sphereGeometry args={[0.24, 16, 16]} />
                 <meshStandardMaterial
                   color={stateColors.glow}
                   emissive={stateColors.glow}
-                  emissiveIntensity={isActive ? 1.5 : 0.5}
+                  emissiveIntensity={isActive ? 1.6 : 0.6}
                 />
               </mesh>
             </group>
@@ -342,264 +360,320 @@ export default function Station({
         );
 
       case 'retrieval':
-        // 3. Base RAG: Monumento de Hiper-Densidade de Dados com 3 Monólitos e Lâminas Ópticas
+        // 3. Base RAG: Monumento de Hiper-Densidade com 3 Monólitos + MATRIZ DE CHUNKS CARREGADAS
         return (
           <group position={[0, 0.16, 0]}>
             {/* Base retangular monumental em granito técnico com chanfros */}
-            <mesh castShadow receiveShadow position={[0, 0.22, 0]}>
-              <boxGeometry args={[2.8, 0.44, 2.8]} />
-              <meshStandardMaterial color={stateColors.pillar} roughness={0.3} metalness={0.12} />
+            <mesh castShadow receiveShadow position={[0, 0.25, 0]}>
+              <boxGeometry args={[3.6, 0.5, 3.6]} />
+              <meshStandardMaterial color={stateColors.pillar} roughness={0.28} metalness={0.12} />
             </mesh>
-            <mesh position={[0, 0.46, 0]}>
-              <boxGeometry args={[3.0, 0.08, 3.0]} />
+            <mesh position={[0, 0.52, 0]}>
+              <boxGeometry args={[3.85, 0.08, 3.85]} />
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
 
-            {/* Monólito 1: Protocolos de Urgência & UPAs do DF (Altura 2.2m) */}
-            <group position={[-0.8, 1.25, -0.65]}>
+            {/* Monólito 1: Protocolos de Urgência & UPAs do DF (Altura 2.4m) */}
+            <group position={[-1.0, 1.45, -0.85]}>
               <mesh castShadow>
-                <boxGeometry args={[0.75, 1.8, 0.6]} />
+                <boxGeometry args={[0.9, 2.2, 0.7]} />
                 <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
               </mesh>
-              {/* Racks de aletas de refrigeração horizontais */}
-              {[-0.6, -0.2, 0.2, 0.6].map((posY, idx) => (
-                <mesh key={idx} position={[0, posY, 0.31]}>
-                  <boxGeometry args={[0.65, 0.04, 0.03]} />
+              {/* Racks de dissipação térmica horizontais */}
+              {[-0.8, -0.4, 0, 0.4, 0.8].map((posY, idx) => (
+                <mesh key={idx} position={[0, posY, 0.36]}>
+                  <boxGeometry args={[0.78, 0.045, 0.03]} />
                   <meshBasicMaterial color={stateColors.glow} />
                 </mesh>
               ))}
             </group>
 
-            {/* Monólito 2: Grande Arquivo Central SES-DF (Altura 2.7m) */}
-            <group position={[0.8, 1.5, -0.6]}>
+            {/* Monólito 2: Grande Arquivo Central SES-DF (Altura 3.2m!) */}
+            <group position={[1.0, 1.85, -0.8]}>
               <mesh castShadow>
-                <boxGeometry args={[0.75, 2.3, 0.65]} />
+                <boxGeometry args={[0.9, 3.0, 0.75]} />
                 <meshStandardMaterial color="#1e40af" roughness={0.2} metalness={0.7} />
               </mesh>
               {/* Leitor óptico vertical de cartuchos de memória */}
-              <mesh position={[0, 0, 0.34]}>
-                <boxGeometry args={[0.5, 2.0, 0.04]} />
+              <mesh position={[0, 0, 0.39]}>
+                <boxGeometry args={[0.65, 2.6, 0.04]} />
                 <meshStandardMaterial color="#0a1b3d" roughness={0.3} metalness={0.8} />
               </mesh>
               {/* Indicadores LED de indexação semântica 768d */}
-              {[-0.8, -0.4, 0, 0.4, 0.8].map((posY, i) => (
-                <mesh key={i} position={[0, posY, 0.37]}>
-                  <boxGeometry args={[0.42, 0.03, 0.02]} />
+              {[-1.1, -0.7, -0.3, 0.1, 0.5, 0.9].map((posY, i) => (
+                <mesh key={i} position={[0, posY, 0.42]}>
+                  <boxGeometry args={[0.55, 0.035, 0.02]} />
                   <meshBasicMaterial color={stateColors.glow} />
                 </mesh>
               ))}
             </group>
 
-            {/* Monólito 3: Diretrizes Clínicas e Especialidades (Altura 1.7m) */}
-            <group position={[-0.75, 1.05, 0.75]}>
+            {/* Monólito 3: Diretrizes Clínicas e Especialidades (Altura 2.1m) */}
+            <group position={[-0.95, 1.25, 0.95]}>
               <mesh castShadow>
-                <boxGeometry args={[0.75, 1.4, 0.6]} />
+                <boxGeometry args={[0.9, 1.8, 0.7]} />
                 <meshStandardMaterial color="#2563eb" roughness={0.25} metalness={0.7} />
               </mesh>
-              <mesh position={[0, 0, 0.31]}>
-                <boxGeometry args={[0.6, 1.1, 0.03]} />
-                <meshBasicMaterial color="#10b981" opacity={0.65} transparent />
+              <mesh position={[0, 0, 0.36]}>
+                <boxGeometry args={[0.75, 1.4, 0.03]} />
+                <meshBasicMaterial color="#10b981" opacity={0.7} transparent />
               </mesh>
             </group>
 
-            {/* Placas/Lâminas Translúcidas de Chunks Documentais (RAG) */}
-            {[-0.22, 0.22].map((offZ, idx) => (
-              <mesh key={idx} position={[0.8, 1.5, -0.6 + offZ]}>
-                <boxGeometry args={[0.68, 2.1, 0.04]} />
-                <meshPhysicalMaterial
-                  color="#dbeafe"
-                  roughness={0.15}
-                  transmission={0.7}
-                  thickness={0.5}
-                  transparent
-                  opacity={0.85}
-                />
-              </mesh>
-            ))}
+            {/* ========================================================= */}
+            {/* MATRIZ DE CHUNKS CARREGADAS (14 Documentos RAG Flutuantes) */}
+            {/* ========================================================= */}
+            <group position={[0, 0, 0]}>
+              {RAG_CHUNKS_DATA.map((chunk, idx) => {
+                const isHighlight = status === 'completed' || isActive;
+                const chunkColor = isHighlight ? (idx < 5 ? '#10b981' : '#38bdf8') : '#94a3b8';
+                return (
+                  <group
+                    key={chunk.id}
+                    position={[chunk.x, chunk.y, chunk.z]}
+                    rotation={[0, chunk.rotY, 0]}
+                  >
+                    {/* Placa do Chunk de Documento em Vidro Óptico */}
+                    <mesh castShadow>
+                      <boxGeometry args={[0.78, 0.42, 0.025]} />
+                      <meshPhysicalMaterial
+                        color="#ffffff"
+                        roughness={0.15}
+                        transmission={0.75}
+                        thickness={0.4}
+                        transparent
+                        opacity={0.85}
+                      />
+                    </mesh>
 
-            {/* Módulo Vetorial Flutuante de Busca Semântica */}
-            <group ref={innerRef} position={[0.2, isActive ? 1.7 : 1.35, 0.3]}>
+                    {/* Borda Iluminada de Indexação do Chunk */}
+                    <mesh position={[0, 0, 0.014]}>
+                      <boxGeometry args={[0.8, 0.44, 0.005]} />
+                      <meshBasicMaterial
+                        color={chunkColor}
+                        wireframe
+                        transparent
+                        opacity={isHighlight ? 0.85 : 0.4}
+                      />
+                    </mesh>
+
+                    {/* Linhas de texto codificadas simuladas no documento */}
+                    {[-0.08, 0.0, 0.08].map((lineY, li) => (
+                      <mesh key={li} position={[0, lineY, 0.016]}>
+                        <boxGeometry args={[0.62 - li * 0.1, 0.02, 0.002]} />
+                        <meshBasicMaterial color={chunkColor} opacity={0.75} transparent />
+                      </mesh>
+                    ))}
+
+                    {/* Chip de Score de Similaridade na borda superior */}
+                    <mesh position={[0.26, 0.16, 0.018]}>
+                      <boxGeometry args={[0.18, 0.05, 0.004]} />
+                      <meshBasicMaterial color={chunkColor} />
+                    </mesh>
+
+                    {/* Raio laser de conexão holográfica ligando ao núcleo de busca */}
+                    {isHighlight && (
+                      <mesh position={[-chunk.x * 0.4, -chunk.y * 0.3 + 0.5, -chunk.z * 0.4]}>
+                        <boxGeometry args={[0.01, 0.01, 0.6]} />
+                        <meshBasicMaterial color={chunkColor} opacity={0.3} transparent />
+                      </mesh>
+                    )}
+                  </group>
+                );
+              })}
+            </group>
+
+            {/* Módulo Vetorial Central Flutuante com Feixe Laser de Busca */}
+            <group ref={innerRef} position={[0.25, isActive ? 2.1 : 1.7, 0.4]}>
               <mesh castShadow>
-                <boxGeometry args={[0.6, 0.8, 0.2]} />
+                <boxGeometry args={[0.75, 1.0, 0.25]} />
                 <meshStandardMaterial
                   color={stateColors.base}
                   emissive={stateColors.base}
-                  emissiveIntensity={isActive ? 1.1 : 0.4}
+                  emissiveIntensity={isActive ? 1.3 : 0.5}
                   roughness={0.15}
                   metalness={0.85}
                 />
               </mesh>
-              <mesh position={[0, 0, 0.11]}>
-                <planeGeometry args={[0.48, 0.65]} />
+              <mesh position={[0, 0, 0.14]}>
+                <planeGeometry args={[0.6, 0.82]} />
                 <meshBasicMaterial color={stateColors.glow} wireframe />
               </mesh>
               <mesh ref={auxiliaryRef} rotation={[0, 0, Math.PI / 4]}>
-                <torusGeometry args={[0.48, 0.02, 16, 28]} />
-                <meshBasicMaterial color="#38bdf8" transparent opacity={0.7} />
+                <torusGeometry args={[0.65, 0.025, 16, 28]} />
+                <meshBasicMaterial color="#38bdf8" transparent opacity={0.8} />
               </mesh>
             </group>
           </group>
         );
 
       case 'generation':
-        // 4. Núcleo LLM Susana: Reator Neural de Brasília com Cúpula de Niemeyer e Tensores
+        // 4. Núcleo LLM Susana: Reator Neural Monumental com Cúpula de Niemeyer (Diâmetro 4.4m!)
         return (
-          <group position={[0, 0.2, 0]}>
-            {/* Dais Monumental com 12 aletas radiais de refrigeração mecânica */}
-            <mesh castShadow receiveShadow position={[0, 0.25, 0]}>
-              <cylinderGeometry args={[1.75, 2.0, 0.5, 36]} />
+          <group position={[0, 0.22, 0]}>
+            {/* Dais Monumental com aletas radiais de refrigeração mecânica */}
+            <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
+              <cylinderGeometry args={[2.3, 2.65, 0.6, 36]} />
               <meshStandardMaterial color={stateColors.pillar} roughness={0.25} metalness={0.15} />
             </mesh>
-            <mesh position={[0, 0.52, 0]}>
-              <cylinderGeometry args={[1.92, 1.96, 0.08, 36]} />
+            <mesh position={[0, 0.62, 0]}>
+              <cylinderGeometry args={[2.55, 2.6, 0.08, 36]} />
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
 
-            {/* Aletas radiais mecânicas do reator */}
+            {/* 16 aletas radiais mecânicas do reator neural */}
             {Array.from({ length: 16 }).map((_, i) => {
               const angle = (i / 16) * Math.PI * 2;
               return (
-                <mesh key={i} position={[Math.cos(angle) * 1.85, 0.25, Math.sin(angle) * 1.85]} rotation={[0, -angle, 0]}>
-                  <boxGeometry args={[0.04, 0.36, 0.18]} />
+                <mesh key={i} position={[Math.cos(angle) * 2.45, 0.3, Math.sin(angle) * 2.45]} rotation={[0, -angle, 0]}>
+                  <boxGeometry args={[0.05, 0.45, 0.24]} />
                   <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
                 </mesh>
               );
             })}
 
-            {/* CÚPULA DE NIEMEYER (Inspirada no Museu Nacional e Catedral de Brasília) */}
-            <mesh position={[0, 0.76, 0]}>
-              <sphereGeometry args={[1.56, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            {/* CÚPULA DE NIEMEYER MONUMENTAL (Museu Nacional de Brasília — Diâmetro 4.4m) */}
+            <mesh position={[0, 0.9, 0]}>
+              <sphereGeometry args={[2.1, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2]} />
               <meshPhysicalMaterial
                 color="#e0f2fe"
                 transmission={0.85}
-                thickness={0.9}
-                roughness={0.12}
+                thickness={1.1}
+                roughness={0.1}
                 ior={1.48}
                 transparent
                 opacity={0.65}
               />
             </mesh>
             {/* Anel Equatorial em Titânio com LED integrado */}
-            <mesh position={[0, 0.78, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <torusGeometry args={[1.58, 0.04, 16, 48]} />
+            <mesh position={[0, 0.92, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[2.12, 0.05, 16, 48]} />
               <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.2} />
             </mesh>
-            <mesh position={[0, 0.78, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <torusGeometry args={[1.61, 0.018, 8, 48]} />
+            <mesh position={[0, 0.92, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[2.16, 0.02, 8, 48]} />
               <meshBasicMaterial color={stateColors.glow} />
             </mesh>
 
-            {/* 4 Colunas Magnéticas com Bobinas de Levitação */}
-            {[-1.1, 1.1].map((px) =>
-              [-1.1, 1.1].map((pz) => (
-                <group key={`${px}-${pz}`} position={[px, 1.15, pz]}>
+            {/* 4 Colunas Magnéticas de Levitação com Bobinas de Indução de Cobre */}
+            {[-1.5, 1.5].map((px) =>
+              [-1.5, 1.5].map((pz) => (
+                <group key={`${px}-${pz}`} position={[px, 1.45, pz]}>
                   <mesh castShadow>
-                    <cylinderGeometry args={[0.09, 0.13, 1.6, 16]} />
+                    <cylinderGeometry args={[0.12, 0.17, 2.3, 16]} />
                     <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.85} />
                   </mesh>
-                  {/* Bobinas de indução em cobre/ouro */}
-                  <mesh position={[0, 0.2, 0]}>
-                    <cylinderGeometry args={[0.13, 0.13, 0.35, 16]} />
+                  {/* Bobinas duplas de indução */}
+                  <mesh position={[0, 0.3, 0]}>
+                    <cylinderGeometry args={[0.18, 0.18, 0.45, 16]} />
                     <meshStandardMaterial color="#d97706" roughness={0.3} metalness={0.9} />
                   </mesh>
-                  {/* Esfera focal no topo */}
-                  <mesh position={[0, 0.85, 0]}>
-                    <sphereGeometry args={[0.08, 16, 16]} />
+                  <mesh position={[0, -0.4, 0]}>
+                    <cylinderGeometry args={[0.18, 0.18, 0.45, 16]} />
+                    <meshStandardMaterial color="#d97706" roughness={0.3} metalness={0.9} />
+                  </mesh>
+                  {/* Esfera focal concentradora no topo */}
+                  <mesh position={[0, 1.2, 0]}>
+                    <sphereGeometry args={[0.11, 16, 16]} />
                     <meshBasicMaterial color={stateColors.glow} />
                   </mesh>
                 </group>
               ))
             )}
 
-            {/* REATOR NEURAL CENTRAL: Dodecaedro cristalino + Gaiola Icosaédrica de Atenção */}
-            <group ref={innerRef} position={[0, 1.5, 0]}>
-              {/* Núcleo interno emissor */}
+            {/* REATOR NEURAL CENTRAL MONUMENTAL */}
+            <group ref={innerRef} position={[0, 1.85, 0]}>
+              {/* Dodecaedro cristalino interno */}
               <mesh castShadow>
-                <dodecahedronGeometry args={[0.58, 0]} />
+                <dodecahedronGeometry args={[0.82, 0]} />
                 <meshStandardMaterial
                   color={stateColors.base}
                   emissive={stateColors.base}
-                  emissiveIntensity={isActive ? 1.3 : 0.45}
+                  emissiveIntensity={isActive ? 1.4 : 0.5}
                   roughness={0.12}
                   metalness={0.88}
                 />
               </mesh>
-              {/* Gaiola de tensores neurais */}
+              {/* Gaiola de tensores neurais icosaédrica */}
               <mesh ref={auxiliaryRef}>
-                <icosahedronGeometry args={[0.82, 0]} />
+                <icosahedronGeometry args={[1.15, 0]} />
                 <meshBasicMaterial
                   color={stateColors.glow}
                   wireframe
                   transparent
-                  opacity={isActive ? 0.85 : 0.35}
+                  opacity={isActive ? 0.9 : 0.4}
                 />
               </mesh>
-              {/* Anéis orbitais de atenção Transformers */}
+              {/* Anéis orbitais de atenção Transformers duplos */}
               <mesh ref={secondaryRotatorRef} rotation={[Math.PI / 4, 0, 0]}>
-                <torusGeometry args={[0.95, 0.02, 16, 40]} />
-                <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
+                <torusGeometry args={[1.35, 0.03, 16, 44]} />
+                <meshBasicMaterial color="#ffffff" transparent opacity={0.65} />
               </mesh>
-              {/* Ponto de luz focal de processamento */}
+              <mesh rotation={[-Math.PI / 4, 0, 0]}>
+                <torusGeometry args={[1.45, 0.02, 16, 44]} />
+                <meshBasicMaterial color={stateColors.glow} transparent opacity={0.4} />
+              </mesh>
+              {/* Luz focal volumétrica */}
               <pointLight
                 color={stateColors.glow}
-                intensity={isActive ? 3.2 : 0.8}
-                distance={6.0}
+                intensity={isActive ? 3.8 : 1.0}
+                distance={7.5}
               />
             </group>
           </group>
         );
 
       case 'evidence':
-        // 5. Evidências: Câmara de Auditoria Pública com Prismas de Rastreamento e Selo
+        // 5. Evidências: Grande Pavilhão de Auditoria e Transparência Governamental
         return (
-          <group position={[0, 0.15, 0]}>
-            {/* Plinto chanfrado de inspeção governamental */}
-            <mesh castShadow receiveShadow position={[0, 0.22, 0]}>
-              <boxGeometry args={[2.4, 0.44, 2.1]} />
+          <group position={[0, 0.16, 0]}>
+            {/* Plinto chanfrado amplo */}
+            <mesh castShadow receiveShadow position={[0, 0.25, 0]}>
+              <boxGeometry args={[3.2, 0.5, 2.8]} />
               <meshStandardMaterial color={stateColors.pillar} roughness={0.3} metalness={0.12} />
             </mesh>
-            <mesh position={[0, 0.46, 0]}>
-              <boxGeometry args={[2.6, 0.08, 2.3]} />
+            <mesh position={[0, 0.52, 0]}>
+              <boxGeometry args={[3.45, 0.08, 3.05]} />
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
 
             {/* Colunas do pórtico de conferência em titânio polido */}
-            <mesh castShadow position={[-0.8, 1.15, 0]}>
-              <boxGeometry args={[0.22, 1.5, 1.3]} />
+            <mesh castShadow position={[-1.1, 1.45, 0]}>
+              <boxGeometry args={[0.28, 1.9, 1.7]} />
               <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
             </mesh>
-            <mesh castShadow position={[0.8, 1.15, 0]}>
-              <boxGeometry args={[0.22, 1.5, 1.3]} />
+            <mesh castShadow position={[1.1, 1.45, 0]}>
+              <boxGeometry args={[0.28, 1.9, 1.7]} />
               <meshStandardMaterial color="#1e40af" roughness={0.2} metalness={0.8} />
             </mesh>
 
-            {/* Janela central de inspeção de evidências em vidro translúcido */}
-            <mesh position={[0, 1.15, 0]}>
-              <boxGeometry args={[1.2, 1.3, 0.05]} />
+            {/* Janela central de inspeção em vidro translúcido */}
+            <mesh position={[0, 1.45, 0]}>
+              <boxGeometry args={[1.6, 1.65, 0.06]} />
               <meshPhysicalMaterial
                 color="#dbeafe"
                 roughness={0.1}
                 transmission={0.75}
-                thickness={0.6}
+                thickness={0.7}
                 transparent
                 opacity={0.85}
               />
             </mesh>
 
-            {/* Selo circular governamental de integridade das fontes */}
-            <mesh position={[0, 1.85, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.42, 0.48, 36]} />
-              <meshBasicMaterial color="#10b981" opacity={0.85} transparent />
+            {/* Selo circular governamental de integridade oficial */}
+            <mesh position={[0, 2.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.55, 0.64, 36]} />
+              <meshBasicMaterial color="#10b981" opacity={0.9} transparent />
             </mesh>
-            <mesh position={[0, 1.85, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.28, 0.34, 36]} />
-              <meshBasicMaterial color="#10b981" opacity={0.5} transparent />
+            <mesh position={[0, 2.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.38, 0.46, 36]} />
+              <meshBasicMaterial color="#10b981" opacity={0.6} transparent />
             </mesh>
 
-            {/* Prisma hexagonal de auditoria de fontes com anel rotativo */}
-            <group ref={innerRef} position={[0, 1.25, 0]}>
+            {/* Prisma hexagonal de auditoria de fontes com anéis duplos */}
+            <group ref={innerRef} position={[0, 1.5, 0]}>
               <mesh castShadow>
-                <cylinderGeometry args={[0.34, 0.34, 0.7, 6]} />
+                <cylinderGeometry args={[0.42, 0.42, 0.9, 6]} />
                 <meshStandardMaterial
                   color={status === 'completed' ? stateColors.base : stateColors.base}
                   emissive={status === 'completed' ? stateColors.base : stateColors.base}
@@ -609,11 +683,11 @@ export default function Station({
                 />
               </mesh>
               <mesh ref={auxiliaryRef} rotation={[0, 0, Math.PI / 2]}>
-                <torusGeometry args={[0.5, 0.03, 16, 28]} />
-                <meshBasicMaterial color={stateColors.glow} transparent opacity={0.7} />
+                <torusGeometry args={[0.65, 0.035, 16, 28]} />
+                <meshBasicMaterial color={stateColors.glow} transparent opacity={0.75} />
               </mesh>
               <mesh ref={secondaryRotatorRef} rotation={[Math.PI / 3, 0, 0]}>
-                <torusGeometry args={[0.42, 0.02, 16, 24]} />
+                <torusGeometry args={[0.55, 0.025, 16, 24]} />
                 <meshStandardMaterial color="#ffffff" roughness={0.1} metalness={0.9} />
               </mesh>
             </group>
@@ -622,63 +696,63 @@ export default function Station({
 
       case 'output':
       default:
-        // 6. Saída: Terminal de Despacho Clínico com Console Cantilever e Beacon do DF
+        // 6. Saída: Terminal de Despacho Clínico com Grande Console Cantilever e Torre do DF
         return (
           <group position={[0, 0.14, 0]}>
-            {/* Pedestal circular em porcelana branca pura */}
-            <mesh castShadow receiveShadow position={[0, 0.22, 0]}>
-              <cylinderGeometry args={[1.4, 1.6, 0.44, 36]} />
+            {/* Pedestal circular amplo em porcelana branca pura */}
+            <mesh castShadow receiveShadow position={[0, 0.24, 0]}>
+              <cylinderGeometry args={[1.8, 2.05, 0.48, 36]} />
               <meshStandardMaterial color={stateColors.pillar} roughness={0.25} metalness={0.12} />
             </mesh>
-            <mesh position={[0, 0.46, 0]}>
-              <cylinderGeometry args={[1.68, 1.7, 0.08, 36]} />
+            <mesh position={[0, 0.5, 0]}>
+              <cylinderGeometry args={[2.1, 2.15, 0.08, 36]} />
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
 
-            {/* Torre de Transmissão da Rede de Saúde do DF */}
-            <group position={[0, 1.35, -0.65]}>
+            {/* Torre de Transmissão da Rede de Saúde do DF (Altura 3.2m!) */}
+            <group position={[0, 1.85, -0.85]}>
               <mesh castShadow>
-                <cylinderGeometry args={[0.06, 0.15, 2.0, 16]} />
+                <cylinderGeometry args={[0.08, 0.2, 2.8, 16]} />
                 <meshStandardMaterial color="#0a1b3d" roughness={0.25} metalness={0.85} />
               </mesh>
-              {/* 3 Anéis emissores de micro-ondas de dados */}
-              {[0.3, 0.65, 0.95].map((posY, i) => (
+              {/* 4 Anéis emissores de micro-ondas de dados */}
+              {[0.4, 0.9, 1.4, 1.9].map((posY, i) => (
                 <mesh key={i} position={[0, posY, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                  <torusGeometry args={[0.18 - i * 0.03, 0.02, 16, 24]} />
+                  <torusGeometry args={[0.26 - i * 0.04, 0.025, 16, 24]} />
                   <meshBasicMaterial color={stateColors.glow} />
                 </mesh>
               ))}
-              {/* Beacon esférico transmissor no topo */}
-              <mesh position={[0, 1.08, 0]}>
-                <sphereGeometry args={[0.12, 16, 16]} />
+              {/* Beacon esférico transmissor no topo com luz pulsante */}
+              <mesh position={[0, 1.5, 0]}>
+                <sphereGeometry args={[0.16, 16, 16]} />
                 <meshBasicMaterial color={stateColors.glow} />
               </mesh>
             </group>
 
-            {/* Púlpito Tecnológico Cantilever com Display Panorâmico Curvo */}
-            <group ref={innerRef} position={[0, 1.15, 0.3]}>
+            {/* Púlpito Tecnológico Cantilever com Display Panorâmico Curvo Ampliado */}
+            <group ref={innerRef} position={[0, 1.45, 0.4]}>
               {/* Braço articulado cantilever */}
-              <mesh castShadow position={[0, -0.25, 0]}>
-                <boxGeometry args={[0.22, 0.5, 0.22]} />
+              <mesh castShadow position={[0, -0.35, 0]}>
+                <boxGeometry args={[0.28, 0.7, 0.28]} />
                 <meshStandardMaterial color="#1e40af" roughness={0.2} metalness={0.8} />
               </mesh>
-              {/* Moldura da tela curva em titânio escovado */}
+              {/* Moldura da tela curva ampla */}
               <mesh castShadow rotation={[-0.28, 0, 0]}>
-                <boxGeometry args={[1.25, 0.8, 0.08]} />
+                <boxGeometry args={[1.75, 1.05, 0.1]} />
                 <meshStandardMaterial color="#0a1b3d" roughness={0.15} metalness={0.9} />
               </mesh>
               {/* Display holográfico de resposta */}
-              <mesh position={[0, 0, 0.05]} rotation={[-0.28, 0, 0]}>
-                <planeGeometry args={[1.12, 0.68]} />
+              <mesh position={[0, 0, 0.06]} rotation={[-0.28, 0, 0]}>
+                <planeGeometry args={[1.6, 0.92]} />
                 <meshStandardMaterial
                   color="#0a1b3d"
                   emissive={stateColors.glow}
-                  emissiveIntensity={isActive ? 1.0 : 0.4}
+                  emissiveIntensity={isActive ? 1.0 : 0.45}
                 />
               </mesh>
-              {/* Borda de vidro óptico anti-reflexo */}
-              <mesh position={[0, 0, 0.055]} rotation={[-0.28, 0, 0]}>
-                <planeGeometry args={[1.18, 0.74]} />
+              {/* Borda de acabamento de vidro óptico anti-reflexo */}
+              <mesh position={[0, 0, 0.065]} rotation={[-0.28, 0, 0]}>
+                <planeGeometry args={[1.68, 1.0]} />
                 <meshPhysicalMaterial
                   color="#dbeafe"
                   roughness={0.08}
@@ -715,24 +789,24 @@ export default function Station({
         document.body.style.cursor = 'auto';
       }}
     >
-      {/* Halo de seleção perimetral dinâmico */}
+      {/* Halo de seleção perimetral dinâmico ampliado */}
       {isSelected && (
         <group ref={haloRef} position={[0, 0.05, 0]}>
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[1.9, 2.08, 48]} />
+            <ringGeometry args={[2.2, 2.4, 48]} />
             <meshBasicMaterial color="#2563eb" side={THREE.DoubleSide} />
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[2.14, 2.2, 48]} />
+            <ringGeometry args={[2.46, 2.54, 48]} />
             <meshBasicMaterial color="#38bdf8" opacity={0.6} transparent side={THREE.DoubleSide} />
           </mesh>
         </group>
       )}
 
-      {/* Halo de hover suave */}
+      {/* Halo de hover suave ampliado */}
       {hovered && !isSelected && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.045, 0]}>
-          <ringGeometry args={[1.8, 1.94, 36]} />
+          <ringGeometry args={[2.1, 2.25, 36]} />
           <meshBasicMaterial color="#38bdf8" opacity={0.7} transparent side={THREE.DoubleSide} />
         </mesh>
       )}

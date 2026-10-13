@@ -46,7 +46,7 @@ export default function World({
       >
         {/* Fundo e neblina do Lago Paranoá / Cerrado tecnológico */}
         <color attach="background" args={['#f4f8fe']} />
-        <fog attach="fog" args={['#f4f8fe', 32, 70]} />
+        <fog attach="fog" args={['#f4f8fe', 90, 260]} />
 
         {/* 1. Iluminação de estúdio profissional (Key, Fill, Rim & Ambient) */}
         <ambientLight intensity={0.72} />
