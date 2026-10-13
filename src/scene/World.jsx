@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import Ground from './Ground';
+import AmbientEnvironment from './AmbientEnvironment';
 import Station from './Station';
 import DataPath from './DataPath';
 import FlowParticle from './FlowParticle';
@@ -44,7 +45,7 @@ export default function World({
       >
         {/* Fundo e neblina alinhados com o token --bg do SUS Digital (#f5f9ff) */}
         <color attach="background" args={['#f5f9ff']} />
-        <fog attach="fog" args={['#f5f9ff', 36, 78]} />
+        <fog attach="fog" args={['#f5f9ff', 40, 85]} />
 
         {/* 1. Iluminação de estúdio profissional (Key, Fill, Rim & Ambient) */}
         <ambientLight intensity={0.7} />
@@ -82,6 +83,9 @@ export default function World({
         />
 
         <Suspense fallback={null}>
+          {/* Ambiente contextual: lâmina líquida, pilares e partículas de dados */}
+          <AmbientEnvironment />
+
           {/* Piso arquitetônico e praças SUS Digital */}
           <Ground />
 
