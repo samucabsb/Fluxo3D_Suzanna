@@ -11,10 +11,10 @@ import { STATIONS_METADATA } from '../data/demoScenarios';
 export default function Ground() {
   const walkways = [
     { from: [-12.0, 4.8], to: [-6.0, 2.2] },      // Input -> Scope
-    { from: [-6.0, 2.2], to: [-2.5, -5.5] },     // Scope -> Retrieval
-    { from: [-2.5, -5.5], to: [3.2, -0.5] },     // Retrieval -> Generation
-    { from: [3.2, -0.5], to: [8.0, -4.8] },      // Generation -> Evidence
-    { from: [8.0, -4.8], to: [12.5, 3.4] },      // Evidence -> Output
+    { from: [-6.0, 2.2], to: [-2.5, -5.5] },     // Scope -> Entities
+    { from: [-2.5, -5.5], to: [3.2, -0.5] },     // Entities -> Retrieval
+    { from: [3.2, -0.5], to: [8.0, -4.8] },      // Retrieval -> Generation
+    { from: [8.0, -4.8], to: [12.5, 3.4] },      // Generation -> Output
     { from: [-6.0, 2.2], to: [12.5, 3.4], bypass: true } // Scope -> Output Bypass
   ];
 
@@ -185,6 +185,24 @@ export default function Ground() {
               </group>
             );
 
+          case 'entities':
+            return (
+              <group key={station.id} position={[x, 0.12, z]}>
+                <mesh receiveShadow castShadow position={[0, 0.06, 0]}>
+                  <cylinderGeometry args={[2.0, 2.2, 0.12, 16]} />
+                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
+                </mesh>
+                <mesh position={[0, 0.005, 0]}>
+                  <cylinderGeometry args={[2.35, 2.35, 0.02, 16]} />
+                  <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
+                </mesh>
+                <mesh position={[0, 0.125, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[1.75, 1.88, 36]} />
+                  <meshBasicMaterial color="#06b6d4" opacity={0.7} transparent />
+                </mesh>
+              </group>
+            );
+
           case 'retrieval':
             return (
               <group key={station.id} position={[x, 0.12, z]}>
@@ -195,6 +213,10 @@ export default function Ground() {
                 <mesh position={[0, 0.005, 0]}>
                   <boxGeometry args={[3.9, 0.02, 3.9]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
+                </mesh>
+                <mesh position={[0, 0.125, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[1.6, 1.72, 36]} />
+                  <meshBasicMaterial color="#6366f1" opacity={0.65} transparent />
                 </mesh>
               </group>
             );
@@ -212,25 +234,7 @@ export default function Ground() {
                 </mesh>
                 <mesh position={[0, 0.145, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                   <ringGeometry args={[2.0, 2.15, 48]} />
-                  <meshBasicMaterial color="#38bdf8" opacity={0.7} transparent />
-                </mesh>
-              </group>
-            );
-
-          case 'evidence':
-            return (
-              <group key={station.id} position={[x, 0.12, z]}>
-                <mesh receiveShadow castShadow position={[0, 0.06, 0]}>
-                  <boxGeometry args={[3.2, 0.12, 3.0]} />
-                  <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
-                </mesh>
-                <mesh position={[0, 0.005, 0]}>
-                  <boxGeometry args={[3.5, 0.02, 3.3]} />
-                  <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
-                </mesh>
-                <mesh position={[0, 0.125, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[1.35, 1.48, 32]} />
-                  <meshBasicMaterial color="#10b981" opacity={0.65} transparent />
+                  <meshBasicMaterial color="#8b5cf6" opacity={0.7} transparent />
                 </mesh>
               </group>
             );
@@ -240,16 +244,16 @@ export default function Ground() {
             return (
               <group key={station.id} position={[x, 0.12, z]}>
                 <mesh receiveShadow castShadow position={[0, 0.06, 0]}>
-                  <cylinderGeometry args={[1.6, 1.75, 0.12, 36]} />
+                  <cylinderGeometry args={[1.7, 1.85, 0.12, 36]} />
                   <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.1} />
                 </mesh>
                 <mesh position={[0, 0.005, 0]}>
-                  <cylinderGeometry args={[1.9, 1.9, 0.02, 36]} />
+                  <cylinderGeometry args={[2.0, 2.0, 0.02, 36]} />
                   <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
                 </mesh>
                 <mesh position={[0, 0.125, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[1.35, 1.48, 36]} />
-                  <meshBasicMaterial color="#0284c7" opacity={0.65} transparent />
+                  <ringGeometry args={[1.45, 1.58, 36]} />
+                  <meshBasicMaterial color="#10b981" opacity={0.7} transparent />
                 </mesh>
               </group>
             );

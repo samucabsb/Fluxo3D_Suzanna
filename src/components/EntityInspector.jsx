@@ -173,6 +173,69 @@ export default function EntityInspector({
           </div>
         )}
 
+        {station.id === 'entities' && (
+          <div className="space-y-3">
+            {execution?.entitiesData ? (
+              <>
+                <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2">
+                  <div className="flex justify-between items-center pb-2 border-b border-blue-100/60">
+                    <span className="text-sus-muted text-[11px]">Intenção Clínica:</span>
+                    <span className="font-semibold text-sus-ink font-mono text-[11px]">
+                      {execution.entitiesData.intent}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-sus-muted">Território de Saúde DF:</span>
+                    <span className="font-semibold text-sus-deep">
+                      {execution.entitiesData.targetTerritory}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-sus-muted">Região Administrativa:</span>
+                    <span className="font-mono text-sus-ink">
+                      {execution.entitiesData.administrativeRegion || 'Distrito Federal'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-sus-muted">Unidade Indicada:</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-sus-deep">
+                      {execution.entitiesData.facilityType}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-sus-muted">Confiabilidade NLU:</span>
+                    <span className="font-mono text-emerald-700 font-bold">
+                      {Math.round((execution.entitiesData.confidence || 0.95) * 100)}%
+                    </span>
+                  </div>
+                </div>
+
+                {execution.entitiesData.symptoms?.length > 0 && (
+                  <div className="p-3.5 rounded-2xl bg-white/80 border border-sus-ice">
+                    <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block mb-1.5">
+                      Entidades & Sintomas Identificados:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {execution.entitiesData.symptoms.map((symptom, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2.5 py-1 rounded-xl text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                        >
+                          {symptom}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-sus-muted text-center py-4">
+                Aguardando processamento NLU de entidades e território.
+              </p>
+            )}
+          </div>
+        )}
+
         {station.id === 'retrieval' && (
           <div className="space-y-3">
             <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/90 border border-sus-ice">
@@ -257,48 +320,6 @@ export default function EntityInspector({
           </div>
         )}
 
-        {station.id === 'evidence' && (
-          <div className="space-y-3">
-            <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2">
-              <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block">
-                Auditoria de Evidências:
-              </span>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    execution?.evidenceData?.verified ? 'bg-sus-success' : 'bg-amber-500'
-                  }`}
-                />
-                <span className="font-semibold text-sus-ink text-xs">
-                  {execution?.evidenceData?.verified
-                    ? 'Resposta com Fontes Associadas'
-                    : 'Sem Associação de Fontes Primárias'}
-                </span>
-              </div>
-              <p className="text-[11px] text-sus-muted leading-relaxed">
-                {execution?.evidenceData?.disclaimer ||
-                  'Nenhuma referência foi processada nesta etapa.'}
-              </p>
-            </div>
-
-            {execution?.evidenceData?.citations?.length > 0 && (
-              <div className="p-3.5 rounded-2xl bg-white/80 border border-sus-ice">
-                <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block mb-1.5">
-                  Órgãos e Portais Citados:
-                </span>
-                <ul className="space-y-1">
-                  {execution.evidenceData.citations.map((c, i) => (
-                    <li key={i} className="flex items-center gap-1.5 text-[11px] text-sus-ink">
-                      <span className="w-1.5 h-1.5 rounded-full bg-sus-primary" />
-                      <span>{c}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
         {station.id === 'output' && (
           <div className="space-y-3">
             {execution?.outputData ? (
@@ -323,6 +344,23 @@ export default function EntityInspector({
                     {execution.outputData.text}
                   </p>
                 </div>
+
+                {/* Citações Oficiais Auditadas */}
+                {execution?.evidenceData?.citations?.length > 0 && (
+                  <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2">
+                    <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block">
+                      Citações e Fontes Oficiais Auditadas:
+                    </span>
+                    <ul className="space-y-1">
+                      {execution.evidenceData.citations.map((c, i) => (
+                        <li key={i} className="flex items-center gap-1.5 text-[11px] text-sus-ink">
+                          <CheckCircle className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-[11px] text-sus-deep leading-relaxed">
                   <strong>Síntese da Execução:</strong> {execution.outputData.summary}

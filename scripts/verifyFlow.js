@@ -25,12 +25,12 @@ function assert(condition, message) {
 
 console.log('--- TESTE 1: Estrutura das Estações 3D ---');
 assert(STATIONS_METADATA.length === 6, 'Existem exatamente 6 estações 3D configuradas');
-assert(STATIONS_METADATA[0].id === 'input', 'Estação 1 é Entrada da Pergunta');
-assert(STATIONS_METADATA[1].id === 'scope', 'Estação 2 é Controle de Escopo');
-assert(STATIONS_METADATA[2].id === 'retrieval', 'Estação 3 é Base de Conhecimento & RAG');
-assert(STATIONS_METADATA[3].id === 'generation', 'Estação 4 é Núcleo de Linguagem');
-assert(STATIONS_METADATA[4].id === 'evidence', 'Estação 5 é Evidências & Referências');
-assert(STATIONS_METADATA[5].id === 'output', 'Estação 6 é Saída da Resposta');
+assert(STATIONS_METADATA[0].id === 'input', 'Estação 1 é Entrada do Usuário & Sessão');
+assert(STATIONS_METADATA[1].id === 'scope', 'Estação 2 é Triagem de Segurança (Guardrails Clínicos & Escopo)');
+assert(STATIONS_METADATA[2].id === 'entities', 'Estação 3 é Resolução de Entidades (NLU & Território DF)');
+assert(STATIONS_METADATA[3].id === 'retrieval', 'Estação 4 é Recuperação de Evidências (RAG Híbrido & Fontes Oficiais)');
+assert(STATIONS_METADATA[4].id === 'generation', 'Estação 5 é Geração Fundamentada (Núcleo de LLM com Prompt Restritivo)');
+assert(STATIONS_METADATA[5].id === 'output', 'Estação 6 é Entrega com Citações (Streaming, Referências & Interface)');
 
 console.log('\n--- TESTE 2: Cenário A (Recuperação Bem-sucedida) ---');
 let execA = createDemoExecution('scenario-a');
@@ -45,6 +45,7 @@ assert(execA.status === 'completed', 'Cenário A conclui com status "completed"'
 assert(execA.outputData.status === 'answered', 'Resultado final é "answered"');
 assert(execA.retrievalData.count === 3, 'Recuperou 3 documentos oficiais');
 assert(execA.retrievalData.documents[0].source.includes('SES-DF'), 'Documento é da SES-DF');
+assert(execA.entitiesData != null, 'Contém dados de resolução de entidades NLU & Território DF');
 assert(execA.evidenceData.verified === true, 'Evidências estão marcadas como verificadas');
 
 console.log('\n--- TESTE 3: Cenário B (Recuperação Insuficiente) ---');
@@ -135,7 +136,7 @@ assert(stageIndexAt(1, thrA) === 5, 'Fim da rota A = etapa 5 (output)');
 
 // Rotas por cenário
 const routeB = buildScenarioRoute(execB.targetStages, false);
-assert(routeB.curves.length === 4, 'Rota B (recuperação insuficiente) tem 4 curvas, sem estação de evidências');
+assert(routeB.curves.length === 5, 'Rota B (recuperação insuficiente) tem 5 curvas conectadas através das 6 estações');
 assert(usesBypass(execC) === true, 'Demo fora do escopo usa rota de desvio');
 assert(usesBypass({ mode: 'live', scopeData: { allowed: false } }) === false, 'Modo ao vivo nunca troca de rota no meio do percurso');
 

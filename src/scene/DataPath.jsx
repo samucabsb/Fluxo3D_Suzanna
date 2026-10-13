@@ -4,14 +4,12 @@ import { STATIONS_METADATA } from '../data/demoScenarios';
 
 export const PIPELINE_SEGMENTS = [
   { from: 'input', to: 'scope', id: 'seg-input-scope' },
-  { from: 'scope', to: 'retrieval', id: 'seg-scope-retrieval' },
+  { from: 'scope', to: 'entities', id: 'seg-scope-entities' },
+  { from: 'entities', to: 'retrieval', id: 'seg-entities-retrieval' },
   { from: 'retrieval', to: 'generation', id: 'seg-retrieval-generation' },
-  { from: 'generation', to: 'evidence', id: 'seg-generation-evidence' },
-  { from: 'evidence', to: 'output', id: 'seg-evidence-output' },
+  { from: 'generation', to: 'output', id: 'seg-generation-output' },
   // Desvio de segurança ética (quando fora do escopo - Cenário C)
-  { from: 'scope', to: 'output', id: 'seg-scope-output-bypass', isBypass: true },
-  // Segmento direto do modelo para a saída (quando sem evidências para auditar - Cenário B)
-  { from: 'generation', to: 'output', id: 'seg-generation-output-direct', isDirect: true }
+  { from: 'scope', to: 'output', id: 'seg-scope-output-bypass', isBypass: true }
 ];
 
 import {

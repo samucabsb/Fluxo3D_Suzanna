@@ -5,6 +5,7 @@ import QuestionInput from '../components/QuestionInput';
 import EntityInspector from '../components/EntityInspector';
 import GuidedTourBar from '../components/GuidedTourBar';
 import AboutModal from '../components/AboutModal';
+import StageLegend from '../components/StageLegend';
 import {
   INITIAL_EXECUTION,
   createDemoExecution,
@@ -335,6 +336,13 @@ export default function App() {
           isPaused={isPaused}
           onStageAdvance={handleStageAdvance}
           onComplete={handleComplete}
+        />
+
+        {/* Menu Lateral / Legenda das 6 Macroetapas */}
+        <StageLegend
+          execution={execution}
+          selectedStationId={selectedStationId}
+          onSelectStation={handleSelectStation}
         />
 
         {/* Painel Inferior: Visita Guiada ou Entrada de Pergunta */}

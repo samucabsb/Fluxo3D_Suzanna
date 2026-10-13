@@ -131,9 +131,9 @@ export default function Station({
     switch (station.id) {
       case 'input': return 3.6;
       case 'scope': return 3.5;
+      case 'entities': return 4.0;
       case 'retrieval': return 4.3;
       case 'generation': return 4.6;
-      case 'evidence': return 3.7;
       case 'output': return 4.1;
       default: return 3.6;
     }
@@ -623,72 +623,102 @@ export default function Station({
           </group>
         );
 
-      case 'evidence':
-        // 5. Evidências: Grande Pavilhão de Auditoria e Transparência Governamental
+      case 'entities':
+        // 3. Resolução de Entidades: NLU & Território DF (Bússola Territorial, Radar Geográfico e Núcleo Linguístico)
         return (
           <group position={[0, 0.16, 0]}>
-            {/* Plinto chanfrado amplo */}
+            {/* Plinto hexagonal tecnológico de grande porte com anéis territoriais */}
             <mesh castShadow receiveShadow position={[0, 0.25, 0]}>
-              <boxGeometry args={[3.2, 0.5, 2.8]} />
-              <meshStandardMaterial color={stateColors.pillar} roughness={0.3} metalness={0.12} />
+              <cylinderGeometry args={[2.0, 2.3, 0.48, 6]} />
+              <meshStandardMaterial color={stateColors.pillar} roughness={0.25} metalness={0.15} />
             </mesh>
-            <mesh position={[0, 0.52, 0]}>
-              <boxGeometry args={[3.45, 0.08, 3.05]} />
-              <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
-            </mesh>
-
-            {/* Colunas do pórtico de conferência em titânio polido */}
-            <mesh castShadow position={[-1.1, 1.45, 0]}>
-              <boxGeometry args={[0.28, 1.9, 1.7]} />
-              <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
-            </mesh>
-            <mesh castShadow position={[1.1, 1.45, 0]}>
-              <boxGeometry args={[0.28, 1.9, 1.7]} />
-              <meshStandardMaterial color="#1e40af" roughness={0.2} metalness={0.8} />
+            <mesh position={[0, 0.51, 0]}>
+              <cylinderGeometry args={[1.9, 1.95, 0.06, 6]} />
+              <meshStandardMaterial color="#1e40af" roughness={0.22} metalness={0.7} />
             </mesh>
 
-            {/* Janela central de inspeção em vidro translúcido */}
-            <mesh position={[0, 1.45, 0]}>
-              <boxGeometry args={[1.6, 1.65, 0.06]} />
-              <meshPhysicalMaterial
-                color="#dbeafe"
-                roughness={0.1}
-                transmission={0.75}
-                thickness={0.7}
-                transparent
-                opacity={0.85}
-              />
-            </mesh>
+            {/* Disco de Radar Territorial do Distrito Federal com anéis concêntricos */}
+            <group position={[0, 0.55, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.3, 1.7, 32]} />
+              <meshBasicMaterial color="#0284c7" wireframe transparent opacity={0.35} />
+            </group>
+            <group position={[0, 0.56, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[1.1, 1.15, 32]} />
+              <meshBasicMaterial color={stateColors.glow} transparent opacity={0.7} />
+            </group>
+            <group position={[0, 0.56, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.6, 0.64, 32]} />
+              <meshBasicMaterial color="#10b981" transparent opacity={0.6} />
+            </group>
 
-            {/* Selo circular governamental de integridade oficial */}
-            <mesh position={[0, 2.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.55, 0.64, 36]} />
-              <meshBasicMaterial color="#10b981" opacity={0.9} transparent />
-            </mesh>
-            <mesh position={[0, 2.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.38, 0.46, 36]} />
-              <meshBasicMaterial color="#10b981" opacity={0.6} transparent />
-            </mesh>
+            {/* 3 Torres / Pilares de Resolução de Entidades (NLU, Território DF, Taxonomia SUS) */}
+            {[0, (2 * Math.PI) / 3, (4 * Math.PI) / 3].map((angle, idx) => {
+              const px = Math.cos(angle) * 1.45;
+              const pz = Math.sin(angle) * 1.45;
+              return (
+                <group key={idx} position={[px, 1.35, pz]} rotation={[0, -angle, 0]}>
+                  <mesh castShadow>
+                    <boxGeometry args={[0.22, 1.7, 0.28]} />
+                    <meshStandardMaterial color="#0a1b3d" roughness={0.25} metalness={0.8} />
+                  </mesh>
+                  {/* Fita de sinal óptico vertical */}
+                  <mesh position={[0, 0, 0.15]}>
+                    <boxGeometry args={[0.06, 1.5, 0.02]} />
+                    <meshBasicMaterial color={stateColors.glow} />
+                  </mesh>
+                  {/* Prisma sensor no topo */}
+                  <mesh position={[0, 0.95, 0]}>
+                    <cylinderGeometry args={[0.08, 0.14, 0.22, 6]} />
+                    <meshStandardMaterial color="#2563eb" roughness={0.2} metalness={0.9} />
+                  </mesh>
+                </group>
+              );
+            })}
 
-            {/* Prisma hexagonal de auditoria de fontes com anéis duplos */}
-            <group ref={innerRef} position={[0, 1.5, 0]}>
+            {/* Hologramas Flutuantes de Entidades Extraídas (Sintoma, Região DF, Unidade SUS) */}
+            {[
+              { label: 'Sintoma: Febre/Dor', color: '#f59e0b', pos: [-0.95, 2.1, 0.4], rotY: 0.3 },
+              { label: 'Território: DF / Taguatinga', color: '#10b981', pos: [0.95, 2.3, 0.3], rotY: -0.3 },
+              { label: 'Unidade: UPA 24h', color: '#38bdf8', pos: [0.0, 2.65, -0.85], rotY: 0.0 },
+            ].map((tag, tIdx) => (
+              <group key={tIdx} position={tag.pos} rotation={[0, tag.rotY, 0]}>
+                <mesh castShadow>
+                  <boxGeometry args={[0.7, 0.22, 0.02]} />
+                  <meshPhysicalMaterial
+                    color="#ffffff"
+                    roughness={0.1}
+                    transmission={0.8}
+                    thickness={0.2}
+                    transparent
+                    opacity={0.85}
+                  />
+                </mesh>
+                <mesh position={[0, 0, 0.012]}>
+                  <boxGeometry args={[0.68, 0.2, 0.002]} />
+                  <meshBasicMaterial color={tag.color} transparent opacity={0.6} />
+                </mesh>
+              </group>
+            ))}
+
+            {/* Núcleo Cristalino de NLU com Anéis Orbitais Semânticos */}
+            <group ref={innerRef} position={[0, 1.7, 0]}>
               <mesh castShadow>
-                <cylinderGeometry args={[0.42, 0.42, 0.9, 6]} />
+                <octahedronGeometry args={[0.55, 1]} />
                 <meshStandardMaterial
-                  color={status === 'completed' ? stateColors.base : stateColors.base}
-                  emissive={status === 'completed' ? stateColors.base : stateColors.base}
-                  emissiveIntensity={stateColors.emissiveIntensity}
-                  roughness={0.18}
-                  metalness={0.75}
+                  color={stateColors.base}
+                  emissive={stateColors.base}
+                  emissiveIntensity={isActive ? 1.4 : 0.6}
+                  roughness={0.12}
+                  metalness={0.9}
                 />
               </mesh>
-              <mesh ref={auxiliaryRef} rotation={[0, 0, Math.PI / 2]}>
-                <torusGeometry args={[0.65, 0.035, 16, 28]} />
+              <mesh ref={auxiliaryRef} rotation={[Math.PI / 4, 0, 0]}>
+                <torusGeometry args={[0.82, 0.03, 16, 36]} />
                 <meshBasicMaterial color={stateColors.glow} transparent opacity={0.75} />
               </mesh>
-              <mesh ref={secondaryRotatorRef} rotation={[Math.PI / 3, 0, 0]}>
-                <torusGeometry args={[0.55, 0.025, 16, 24]} />
-                <meshStandardMaterial color="#ffffff" roughness={0.1} metalness={0.9} />
+              <mesh ref={secondaryRotatorRef} rotation={[-Math.PI / 4, Math.PI / 6, 0]}>
+                <torusGeometry args={[0.95, 0.02, 16, 36]} />
+                <meshStandardMaterial color="#ffffff" roughness={0.1} metalness={0.95} />
               </mesh>
             </group>
           </group>
@@ -696,7 +726,7 @@ export default function Station({
 
       case 'output':
       default:
-        // 6. Saída: Terminal de Despacho Clínico com Grande Console Cantilever e Torre do DF
+        // 6. Entrega com Citações: Terminal de Despacho Clínico com Streaming, Torre do DF e Citações Oficiais
         return (
           <group position={[0, 0.14, 0]}>
             {/* Pedestal circular amplo em porcelana branca pura */}
@@ -709,13 +739,13 @@ export default function Station({
               <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
             </mesh>
 
-            {/* Torre de Transmissão da Rede de Saúde do DF (Altura 3.2m!) */}
+            {/* Torre de Transmissão / Streaming da Rede SES-DF (Altura 3.2m!) */}
             <group position={[0, 1.85, -0.85]}>
               <mesh castShadow>
                 <cylinderGeometry args={[0.08, 0.2, 2.8, 16]} />
                 <meshStandardMaterial color="#0a1b3d" roughness={0.25} metalness={0.85} />
               </mesh>
-              {/* 4 Anéis emissores de micro-ondas de dados */}
+              {/* 4 Anéis emissores de streaming e dados */}
               {[0.4, 0.9, 1.4, 1.9].map((posY, i) => (
                 <mesh key={i} position={[0, posY, 0]} rotation={[Math.PI / 2, 0, 0]}>
                   <torusGeometry args={[0.26 - i * 0.04, 0.025, 16, 24]} />
@@ -729,8 +759,35 @@ export default function Station({
               </mesh>
             </group>
 
+            {/* Painel Lateral de Citações e Selo Governamental Oficial */}
+            <group position={[-1.1, 1.5, 0]} rotation={[0, 0.4, 0]}>
+              <mesh castShadow>
+                <boxGeometry args={[0.6, 1.2, 0.04]} />
+                <meshPhysicalMaterial
+                  color="#ffffff"
+                  roughness={0.1}
+                  transmission={0.8}
+                  thickness={0.3}
+                  transparent
+                  opacity={0.85}
+                />
+              </mesh>
+              {/* Selo circular de citação auditada */}
+              <mesh position={[0, 0.35, 0.025]}>
+                <ringGeometry args={[0.12, 0.18, 24]} />
+                <meshBasicMaterial color="#10b981" />
+              </mesh>
+              {/* Linhas de referências oficiais */}
+              {[-0.05, -0.2, -0.35].map((ly, li) => (
+                <mesh key={li} position={[0, ly, 0.025]}>
+                  <boxGeometry args={[0.42, 0.035, 0.005]} />
+                  <meshBasicMaterial color="#38bdf8" />
+                </mesh>
+              ))}
+            </group>
+
             {/* Púlpito Tecnológico Cantilever com Display Panorâmico Curvo Ampliado */}
-            <group ref={innerRef} position={[0, 1.45, 0.4]}>
+            <group ref={innerRef} position={[0.2, 1.45, 0.4]}>
               {/* Braço articulado cantilever */}
               <mesh castShadow position={[0, -0.35, 0]}>
                 <boxGeometry args={[0.28, 0.7, 0.28]} />

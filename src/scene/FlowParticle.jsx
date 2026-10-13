@@ -10,7 +10,7 @@ import {
   CATCH_UP_SPEED
 } from './trajectory';
 
-const DEFAULT_STAGES = ['input', 'scope', 'retrieval', 'generation', 'evidence', 'output'];
+const DEFAULT_STAGES = ['input', 'scope', 'entities', 'retrieval', 'generation', 'output'];
 const REDUCED_MOTION =
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
