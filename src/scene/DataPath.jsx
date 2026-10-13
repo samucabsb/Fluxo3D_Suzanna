@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { STATIONS_METADATA } from '../data/demoScenarios';
 
@@ -22,6 +23,9 @@ import {
 export { getStationPos, createSegmentCurve, buildScenarioRoute };
 
 function HighTechConduit({ segment, isSegmentActive, isCompleted, isSuccess, isBypass, isWarning, isError }) {
+  const coreMatRef = useRef();
+  const outerMatRef = useRef();
+
   const curve = useMemo(() => {
     return createSegmentCurve(segment.from, segment.to, isBypass);
   }, [segment.from, segment.to, isBypass]);
@@ -71,11 +75,35 @@ function HighTechConduit({ segment, isSegmentActive, isCompleted, isSuccess, isB
     return { outerColor: '#93c5fd', coreColor: '#dbeafe', coreEmissive: 0.2, opacity: 0.4 };
   }, [isBypass, isSegmentActive, isCompleted, isSuccess, isWarning, isError]);
 
+  const targetCoreColor = useMemo(() => new THREE.Color(coreColor), [coreColor]);
+  const targetOuterColor = useMemo(() => new THREE.Color(outerColor), [outerColor]);
+
+  // Transição suave de cor (lerp) e pulso emissivo ótico animado nos dutos
+  useFrame((state, delta) => {
+    if (coreMatRef.current) {
+      coreMatRef.current.color.lerp(targetCoreColor, delta * 3.5);
+      coreMatRef.current.emissive.lerp(targetCoreColor, delta * 3.5);
+      if (isSegmentActive) {
+        coreMatRef.current.emissiveIntensity = 2.0 + Math.sin(state.clock.elapsedTime * 6.5) * 0.7;
+      } else {
+        coreMatRef.current.emissiveIntensity = THREE.MathUtils.lerp(
+          coreMatRef.current.emissiveIntensity,
+          coreEmissive,
+          delta * 2.5
+        );
+      }
+    }
+    if (outerMatRef.current) {
+      outerMatRef.current.color.lerp(targetOuterColor, delta * 3.5);
+    }
+  });
+
   return (
     <group>
       {/* 1. Duto de proteção em vidro óptico translúcido SUS Digital */}
       <mesh geometry={outerTubeGeo} receiveShadow>
         <meshPhysicalMaterial
+          ref={outerMatRef}
           color={outerColor}
           roughness={0.12}
           metalness={0.15}
@@ -90,6 +118,7 @@ function HighTechConduit({ segment, isSegmentActive, isCompleted, isSuccess, isB
       {/* 2. Núcleo óptico condutor de dados altamente emissivo */}
       <mesh geometry={innerCoreGeo}>
         <meshStandardMaterial
+          ref={coreMatRef}
           color={coreColor}
           emissive={coreColor}
           emissiveIntensity={coreEmissive}

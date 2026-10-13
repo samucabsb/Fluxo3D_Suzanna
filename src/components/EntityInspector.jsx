@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Lightbulb,
@@ -13,6 +13,39 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { getStationById } from '../features/flow/flowSelectors';
+
+function TypewriterText({ text }) {
+  const [displayedLength, setDisplayedLength] = useState(0);
+
+  useEffect(() => {
+    if (!text) {
+      setDisplayedLength(0);
+      return;
+    }
+    setDisplayedLength(4);
+    const interval = setInterval(() => {
+      setDisplayedLength((prev) => {
+        if (prev >= text.length) {
+          clearInterval(interval);
+          return text.length;
+        }
+        return Math.min(prev + 5, text.length);
+      });
+    }, 16);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  const isStreaming = displayedLength < (text?.length || 0);
+
+  return (
+    <span>
+      {text?.slice(0, displayedLength)}
+      {isStreaming && (
+        <span className="inline-block w-1.5 h-3.5 bg-blue-600 ml-1 animate-pulse align-middle" />
+      )}
+    </span>
+  );
+}
 
 export default function EntityInspector({
   selectedStationId,
@@ -330,7 +363,7 @@ export default function EntityInspector({
                   </div>
 
                   <p className="text-sm text-slate-900 leading-relaxed font-sans bg-slate-50/80 p-3 rounded-xl border border-slate-100">
-                    {execution.outputData.text}
+                    <TypewriterText text={execution.outputData.text} />
                   </p>
                 </div>
 

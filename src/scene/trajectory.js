@@ -59,12 +59,33 @@ export function buildScenarioRoute(stages, isOutOfScope = false) {
 }
 
 /**
- * Avança o progresso geométrico (0..1). Depende só de delta, velocidade e comprimento da rota:
- * nenhum estado lógico (etapa, seleção, inspetor) participa. Pausado => progresso intocado.
+ * Multiplicador cinemático de velocidade por nó:
+ * Desacelera suavemente nas estações (leitura/processamento de dados)
+ * e acelera ao disparar pelos dutos inter-estações.
  */
-export function stepProgress(progress, delta, routeLength, { running, speed = PARTICLE_SPEED, cap = 1 }) {
+export function getLocalSpeedMultiplier(progress, thresholds) {
+  if (!thresholds || thresholds.length === 0) return 1;
+  let start = 0;
+  for (let i = 0; i < thresholds.length; i++) {
+    const end = thresholds[i];
+    if (progress <= end || i === thresholds.length - 1) {
+      const span = Math.max(end - start, 1e-5);
+      const uLocal = Math.min(Math.max((progress - start) / span, 0), 1);
+      return 0.35 + 0.65 * Math.sin(Math.PI * uLocal);
+    }
+    start = end;
+  }
+  return 1;
+}
+
+/**
+ * Avança o progresso geométrico (0..1). Depende de delta, velocidade e comprimento da rota.
+ * Quando thresholds é passado, aplica easing cinemático entre estações.
+ */
+export function stepProgress(progress, delta, routeLength, { running, speed = PARTICLE_SPEED, cap = 1, thresholds = null }) {
   if (!running || routeLength <= 0) return progress;
-  return Math.min(progress + (delta * speed) / routeLength, cap);
+  const mult = thresholds ? getLocalSpeedMultiplier(progress, thresholds) : 1;
+  return Math.min(progress + (delta * speed * mult) / routeLength, cap);
 }
 
 /**

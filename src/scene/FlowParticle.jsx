@@ -1,5 +1,6 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Trail, Sparkles } from '@react-three/drei';
 import {
   buildScenarioRoute,
   usesBypass,
@@ -24,10 +25,6 @@ export default function FlowParticle({
   const groupRef = useRef();
   const innerMeshRef = useRef();
   const auraRef = useRef();
-  const trailRef0 = useRef();
-  const trailRef1 = useRef();
-  const trailRef2 = useRef();
-  const trailRef3 = useRef();
 
   // Progresso geométrico único (0..1) da execução. Só useFrame escreve aqui.
   const progressRef = useRef(0);
@@ -71,7 +68,8 @@ export default function FlowParticle({
       progressRef.current = stepProgress(progressRef.current, delta, length, {
         running: true,
         speed: activeSpeed,
-        cap: isLiveWaiting ? liveHoldAt : 1
+        cap: isLiveWaiting ? liveHoldAt : 1,
+        thresholds: thresholds
       });
 
       // Etapa lógica derivada da posição
@@ -86,7 +84,8 @@ export default function FlowParticle({
       // Execução terminou (ex.: resposta da API chegou): continua pela rota, sem salto.
       progressRef.current = stepProgress(progressRef.current, delta, length, {
         running: true,
-        speed: CATCH_UP_SPEED
+        speed: CATCH_UP_SPEED,
+        thresholds: thresholds
       });
     }
 
@@ -94,17 +93,6 @@ export default function FlowParticle({
     const idle = !isRunning && !REDUCED_MOTION;
     const hoverOffset = idle ? Math.sin(state.clock.elapsedTime * 2.5) * 0.04 : 0;
     groupRef.current.position.set(p.x, p.y + 0.38 + hoverOffset, p.z);
-
-    // Cauda de cometa luminosa que segue a trajetória
-    const trails = [trailRef0, trailRef1, trailRef2, trailRef3];
-    trails.forEach((tRef, idx) => {
-      if (!tRef.current) return;
-      const trailOffset = (idx + 1) * 0.018;
-      const trailProgress = Math.max(0, progressRef.current - trailOffset);
-      const tp = route.getPointAt(trailProgress);
-      tRef.current.position.set(tp.x, tp.y + 0.38, tp.z);
-      tRef.current.visible = isRunning && progressRef.current > 0.008;
-    });
 
     if (!REDUCED_MOTION) {
       if (innerMeshRef.current) {
@@ -129,81 +117,77 @@ export default function FlowParticle({
   }, [execution?.status, execution?.scopeData?.allowed, execution?.outputData?.status]);
 
   return (
-    <>
-      {/* 1. Cauda de Cometa Luminosa com 4 Nodos em Gradiente */}
-      <mesh ref={trailRef0} visible={false}>
-        <sphereGeometry args={[0.16, 16, 16]} />
-        <meshBasicMaterial color={particleColor} transparent opacity={0.75} />
-      </mesh>
-      <mesh ref={trailRef1} visible={false}>
-        <sphereGeometry args={[0.12, 12, 12]} />
-        <meshBasicMaterial color={particleColor} transparent opacity={0.55} />
-      </mesh>
-      <mesh ref={trailRef2} visible={false}>
-        <sphereGeometry args={[0.08, 10, 10]} />
-        <meshBasicMaterial color={particleColor} transparent opacity={0.35} />
-      </mesh>
-      <mesh ref={trailRef3} visible={false}>
-        <sphereGeometry args={[0.05, 8, 8]} />
-        <meshBasicMaterial color={particleColor} transparent opacity={0.2} />
-      </mesh>
-
-      {/* 2. Pacote de Dados Principal */}
-      <group ref={groupRef} position={[-12.0, 0.64, 4.8]}>
+    <group ref={groupRef} position={[-12.0, 0.64, 4.8]}>
+      {/* 1. Rastro Contínuo de Fita Luminescente (MeshLine Ribbon) */}
+      <Trail
+        width={0.45}
+        length={10}
+        color={particleColor}
+        attenuation={(t) => t * t}
+      >
         {/* Núcleo cristalino em octaedro de alta refração */}
         <mesh ref={innerMeshRef} castShadow>
           <octahedronGeometry args={[0.26, 0]} />
           <meshStandardMaterial
             color={particleColor}
             emissive={particleColor}
-            emissiveIntensity={2.2}
+            emissiveIntensity={2.4}
             roughness={0.1}
             metalness={0.9}
           />
         </mesh>
+      </Trail>
 
-        {/* Faísca central branca pura de alta luminosidade */}
-        <mesh>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
+      {/* 2. Micro-partículas Quânticas de Dados Orbitantes */}
+      <Sparkles
+        count={25}
+        scale={1.4}
+        size={2.4}
+        speed={0.8}
+        color={particleColor}
+      />
 
-        {/* Duplo anel giroscópico de contenção clínica */}
-        <mesh ref={auraRef} rotation={[Math.PI / 4, 0, 0]}>
-          <torusGeometry args={[0.42, 0.025, 16, 36]} />
-          <meshBasicMaterial
-            color={particleColor}
-            transparent
-            opacity={0.8}
-          />
-        </mesh>
-        <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
-          <torusGeometry args={[0.35, 0.018, 16, 32]} />
-          <meshBasicMaterial
-            color="#ffffff"
-            transparent
-            opacity={0.65}
-          />
-        </mesh>
+      {/* 3. Faísca central branca pura de alta luminosidade */}
+      <mesh>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
 
-        {/* Aura esférica de bio-energia de saúde */}
-        <mesh>
-          <sphereGeometry args={[0.32, 16, 16]} />
-          <meshBasicMaterial
-            color={particleColor}
-            wireframe
-            transparent
-            opacity={0.3}
-          />
-        </mesh>
-
-        {/* Luz pontual contextual de iluminação do trajeto */}
-        <pointLight
+      {/* 4. Duplo anel giroscópico de contenção clínica */}
+      <mesh ref={auraRef} rotation={[Math.PI / 4, 0, 0]}>
+        <torusGeometry args={[0.42, 0.025, 16, 36]} />
+        <meshBasicMaterial
           color={particleColor}
-          intensity={3.8}
-          distance={5.0}
+          transparent
+          opacity={0.85}
         />
-      </group>
-    </>
+      </mesh>
+      <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
+        <torusGeometry args={[0.35, 0.018, 16, 32]} />
+        <meshBasicMaterial
+          color="#ffffff"
+          transparent
+          opacity={0.7}
+        />
+      </mesh>
+
+      {/* 5. Aura esférica de bio-energia de saúde */}
+      <mesh>
+        <sphereGeometry args={[0.32, 16, 16]} />
+        <meshBasicMaterial
+          color={particleColor}
+          wireframe
+          transparent
+          opacity={0.35}
+        />
+      </mesh>
+
+      {/* 6. Luz pontual volumétrica de iluminação do trajeto */}
+      <pointLight
+        color={particleColor}
+        intensity={4.2}
+        distance={6.0}
+      />
+    </group>
   );
 }

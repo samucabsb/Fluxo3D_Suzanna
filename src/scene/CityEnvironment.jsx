@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Instances, Instance } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
@@ -663,26 +664,36 @@ export default function CityEnvironment() {
       ))}
 
       {/* ========================================================= */}
-      {/* 7. ÁRVORES LOW-POLY E PRAÇAS VERDES                       */}
+      {/* 7. ÁRVORES OTIMIZADAS COM GPU INSTANCING (2 DRAW CALLS)    */}
       {/* ========================================================= */}
-      {trees.map((t) => (
-        <group key={t.id} position={[t.x, 0, t.z]} scale={t.scale}>
-          {/* Tronco da árvore */}
-          <mesh castShadow position={[0, 0.45, 0]}>
-            <cylinderGeometry args={[0.1, 0.14, 0.9, 8]} />
-            <meshStandardMaterial color="#78350f" roughness={0.8} />
-          </mesh>
-          {/* Copa estilizada em cone escalonado */}
-          <mesh castShadow position={[0, 1.3, 0]}>
-            <coneGeometry args={[0.75, 1.3, 8]} />
-            <meshStandardMaterial color={t.color} roughness={0.6} />
-          </mesh>
-          <mesh castShadow position={[0, 1.9, 0]}>
-            <coneGeometry args={[0.55, 1.1, 8]} />
-            <meshStandardMaterial color={t.color} roughness={0.55} />
-          </mesh>
-        </group>
-      ))}
+      <Instances limit={trees.length} range={trees.length}>
+        <cylinderGeometry args={[0.1, 0.14, 0.9, 8]} />
+        <meshStandardMaterial color="#78350f" roughness={0.8} />
+        {trees.map((t) => (
+          <Instance
+            key={`trunk-${t.id}`}
+            position={[t.x, 0.45 * t.scale, t.z]}
+            scale={[t.scale, t.scale, t.scale]}
+          />
+        ))}
+      </Instances>
+
+      <Instances limit={trees.length * 2} range={trees.length * 2}>
+        <coneGeometry args={[0.7, 1.25, 8]} />
+        <meshStandardMaterial color="#15803d" roughness={0.6} />
+        {trees.map((t) => (
+          <React.Fragment key={`foliage-${t.id}`}>
+            <Instance
+              position={[t.x, 1.3 * t.scale, t.z]}
+              scale={[t.scale, t.scale, t.scale]}
+            />
+            <Instance
+              position={[t.x, 1.9 * t.scale, t.z]}
+              scale={[t.scale * 0.75, t.scale * 0.85, t.scale * 0.75]}
+            />
+          </React.Fragment>
+        ))}
+      </Instances>
     </group>
   );
 }

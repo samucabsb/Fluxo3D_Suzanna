@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Compass,
   RotateCcw,
@@ -11,6 +11,27 @@ import {
   Droplet
 } from 'lucide-react';
 import StatusIndicator from './StatusIndicator';
+
+function AnimatedNumber({ value }) {
+  const [displayValue, setDisplayValue] = useState(value);
+
+  useEffect(() => {
+    if (value === displayValue) return;
+    const diff = value - displayValue;
+    const step = Math.ceil(Math.abs(diff) / 8) || 1;
+    const timer = setInterval(() => {
+      setDisplayValue((prev) => {
+        if (prev < value) return Math.min(prev + step, value);
+        if (prev > value) return Math.max(prev - step, value);
+        clearInterval(timer);
+        return value;
+      });
+    }, 20);
+    return () => clearInterval(timer);
+  }, [value, displayValue]);
+
+  return <span>{displayValue}</span>;
+}
 
 export default function TopHUD({
   execution,
@@ -58,7 +79,7 @@ export default function TopHUD({
           <Layers className="w-3.5 h-3.5 text-sus-primary" />
           <span>Docs:</span>
           <span className="font-semibold text-sus-ink font-mono">
-            {execution?.status === 'idle' ? '—' : docsCount}
+            {execution?.status === 'idle' ? '—' : <AnimatedNumber value={docsCount} />}
           </span>
         </div>
 
@@ -68,7 +89,12 @@ export default function TopHUD({
           <Clock className="w-3.5 h-3.5 text-sus-deep" />
           <span>Tempo:</span>
           <span className="font-semibold text-sus-ink font-mono">
-            {durationMs > 0 ? `${durationMs}ms` : '—'}
+            {durationMs > 0 ? (
+              <>
+                <AnimatedNumber value={durationMs} />
+                <span>ms</span>
+              </>
+            ) : '—'}
           </span>
         </div>
       </div>

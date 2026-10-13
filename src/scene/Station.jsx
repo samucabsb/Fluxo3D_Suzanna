@@ -42,28 +42,74 @@ export default function Station({
   const auxiliaryRef = useRef();
   const haloRef = useRef();
   const secondaryRotatorRef = useRef();
+  const shockwaveRef = useRef();
+  const scannerRef = useRef();
+  const entityFloatingGroupRef = useRef();
+  const shockwaveProgressRef = useRef(0);
+  const wasActiveRef = useRef(false);
 
   useFrame((state, delta) => {
     // Rotação suave do elemento cinético principal
     if (innerRef.current) {
-      const speed = isActive ? 1.8 : hovered ? 1.0 : 0.4;
+      const speed = isActive ? 2.2 : hovered ? 1.0 : 0.4;
       innerRef.current.rotation.y += delta * speed;
+
+      // Estação 5 (generation): Pulso do reator neural no ritmo de processamento de tokens
+      if (station.id === 'generation' && isActive) {
+        const pulse = 1 + Math.sin(state.clock.elapsedTime * 7.5) * 0.08;
+        innerRef.current.scale.set(pulse, pulse, pulse);
+      } else if (station.id === 'generation') {
+        innerRef.current.scale.set(1, 1, 1);
+      }
     }
+
     // Rotação contra-rotativa do anel secundário
     if (secondaryRotatorRef.current) {
-      const secSpeed = isActive ? -2.2 : -0.6;
+      const secSpeed = isActive ? -2.6 : -0.6;
       secondaryRotatorRef.current.rotation.y += delta * secSpeed;
       secondaryRotatorRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 1.5) * 0.2;
     }
+
     // Oscilação do componente auxiliar
     if (auxiliaryRef.current) {
-      const rate = isActive ? 2.6 : 1.2;
+      const rate = isActive ? 3.0 : 1.2;
       auxiliaryRef.current.rotation.x = Math.sin(state.clock.elapsedTime * rate) * 0.2;
       auxiliaryRef.current.rotation.z = Math.cos(state.clock.elapsedTime * rate) * 0.2;
     }
+
     // Pulso no halo perimetral
     if (haloRef.current && (isActive || isSelected)) {
       haloRef.current.rotation.z += delta * 0.5;
+    }
+
+    // Estação 2 (scope): Scanner laser translúcido subindo e descendo
+    if (scannerRef.current) {
+      scannerRef.current.position.y = 1.35 + Math.sin(state.clock.elapsedTime * 3.8) * 0.65;
+    }
+
+    // Estação 3 (entities): Levitação orgânica dos hologramas
+    if (entityFloatingGroupRef.current) {
+      entityFloatingGroupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2.2) * 0.07;
+    }
+
+    // Shockwave (Onda de choque) ao aterrissar o pacote na estação
+    if (isActive && !wasActiveRef.current) {
+      shockwaveProgressRef.current = 0.001;
+    }
+    wasActiveRef.current = isActive;
+
+    if (shockwaveProgressRef.current > 0 && shockwaveProgressRef.current < 1) {
+      shockwaveProgressRef.current += delta * 1.7;
+      if (shockwaveProgressRef.current >= 1) {
+        shockwaveProgressRef.current = 1;
+        if (shockwaveRef.current) shockwaveRef.current.visible = false;
+      } else if (shockwaveRef.current) {
+        const p = shockwaveProgressRef.current;
+        const scale = 0.5 + p * 2.8;
+        shockwaveRef.current.scale.set(scale, scale, 1);
+        shockwaveRef.current.material.opacity = (1 - p) * 0.9;
+        shockwaveRef.current.visible = true;
+      }
     }
   });
 
@@ -322,6 +368,19 @@ export default function Station({
                 />
               </mesh>
             </group>
+
+            {/* Scanner Laser de Triagem Ativa */}
+            {isActive && (
+              <mesh ref={scannerRef} position={[0, 1.4, 0]}>
+                <cylinderGeometry args={[1.55, 1.55, 0.04, 32]} />
+                <meshBasicMaterial
+                  color={status === 'warning' ? '#fbbf24' : '#38bdf8'}
+                  transparent
+                  opacity={0.45}
+                  side={THREE.DoubleSide}
+                />
+              </mesh>
+            )}
 
             {/* Núcleo Giroscópico de Triagem Tri-axial Ampliado */}
             <group ref={innerRef} position={[0, 1.6, 0]}>
@@ -676,29 +735,31 @@ export default function Station({
             })}
 
             {/* Hologramas Flutuantes de Entidades Extraídas (Sintoma, Região DF, Unidade SUS) */}
-            {[
-              { label: 'Sintoma: Febre/Dor', color: '#f59e0b', pos: [-0.95, 2.1, 0.4], rotY: 0.3 },
-              { label: 'Território: DF / Taguatinga', color: '#10b981', pos: [0.95, 2.3, 0.3], rotY: -0.3 },
-              { label: 'Unidade: UPA 24h', color: '#38bdf8', pos: [0.0, 2.65, -0.85], rotY: 0.0 },
-            ].map((tag, tIdx) => (
-              <group key={tIdx} position={tag.pos} rotation={[0, tag.rotY, 0]}>
-                <mesh castShadow>
-                  <boxGeometry args={[0.7, 0.22, 0.02]} />
-                  <meshPhysicalMaterial
-                    color="#ffffff"
-                    roughness={0.1}
-                    transmission={0.8}
-                    thickness={0.2}
-                    transparent
-                    opacity={0.85}
-                  />
-                </mesh>
-                <mesh position={[0, 0, 0.012]}>
-                  <boxGeometry args={[0.68, 0.2, 0.002]} />
-                  <meshBasicMaterial color={tag.color} transparent opacity={0.6} />
-                </mesh>
-              </group>
-            ))}
+            <group ref={entityFloatingGroupRef}>
+              {[
+                { label: 'Sintoma: Febre/Dor', color: '#f59e0b', pos: [-0.95, 2.1, 0.4], rotY: 0.3 },
+                { label: 'Território: DF / Taguatinga', color: '#10b981', pos: [0.95, 2.3, 0.3], rotY: -0.3 },
+                { label: 'Unidade: UPA 24h', color: '#38bdf8', pos: [0.0, 2.65, -0.85], rotY: 0.0 },
+              ].map((tag, tIdx) => (
+                <group key={tIdx} position={tag.pos} rotation={[0, tag.rotY, 0]}>
+                  <mesh castShadow>
+                    <boxGeometry args={[0.7, 0.22, 0.02]} />
+                    <meshPhysicalMaterial
+                      color="#ffffff"
+                      roughness={0.1}
+                      transmission={0.8}
+                      thickness={0.2}
+                      transparent
+                      opacity={0.85}
+                    />
+                  </mesh>
+                  <mesh position={[0, 0, 0.012]}>
+                    <boxGeometry args={[0.68, 0.2, 0.002]} />
+                    <meshBasicMaterial color={tag.color} transparent opacity={0.6} />
+                  </mesh>
+                </group>
+              ))}
+            </group>
 
             {/* Núcleo Cristalino de NLU com Anéis Orbitais Semânticos */}
             <group ref={innerRef} position={[0, 1.7, 0]}>
@@ -870,6 +931,17 @@ export default function Station({
 
       {/* Arquitetura procedural da estação */}
       {renderStationArchitecture()}
+
+      {/* Shockwave de Aterrissagem de Dados na Estação */}
+      <mesh
+        ref={shockwaveRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.05, 0]}
+        visible={false}
+      >
+        <ringGeometry args={[0.9, 1.05, 48]} />
+        <meshBasicMaterial color={stateColors.glow} transparent opacity={0} side={THREE.DoubleSide} />
+      </mesh>
 
       {/* ========================================================= */}
       {/* ETIQUETA CONTEXTUAL COM ALTO CONTRASTE E LEGIBILIDADE     */}

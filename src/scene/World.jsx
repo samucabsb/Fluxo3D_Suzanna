@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
+import { ContactShadows, Environment } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import CityEnvironment from './CityEnvironment';
 import Ground from './Ground';
@@ -136,6 +137,14 @@ export default function World({
             resetSignal={cameraResetSignal}
             focusTarget={tourFocusTarget}
           />
+
+          {/* Iluminação de ambiente IBL realista da cidade */}
+          <Environment preset="city" environmentIntensity={0.6} />
+
+          {/* Pós-processamento com Bloom Seletivo para dutos e partículas ativas */}
+          <EffectComposer disableNormalPass multisampling={0}>
+            <Bloom intensity={0.85} luminanceThreshold={1.1} mipmapBlur />
+          </EffectComposer>
         </Suspense>
       </Canvas>
     </div>
