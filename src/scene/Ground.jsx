@@ -36,7 +36,84 @@ export default function Ground() {
         />
       </mesh>
 
-      {/* Moldura chanfrada intermediária em Azul Profundo SUS (#1e40af) */}
+      {/* ASA OESTE — Píer de Acesso do Cidadão (Entrada da Ingestão) */}
+      <group position={[-16.5, -0.22, 3.8]}>
+        <mesh receiveShadow position={[0, 0, 0]}>
+          <boxGeometry args={[7.2, 0.36, 4.2]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.05} />
+        </mesh>
+        <mesh position={[0, -0.04, 0]}>
+          <boxGeometry args={[7.4, 0.08, 4.4]} />
+          <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
+        </mesh>
+        {/* Frisos de LED nas margens do píer */}
+        <mesh position={[0, 0.19, 2.12]}>
+          <boxGeometry args={[7.2, 0.02, 0.05]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+        <mesh position={[0, 0.19, -2.12]}>
+          <boxGeometry args={[7.2, 0.02, 0.05]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+        {/* Pilares do Píer Oeste no leito do lago */}
+        {[-2.4, 2.4].map((px, i) => (
+          <mesh key={i} position={[px, -0.85, 0]}>
+            <cylinderGeometry args={[0.32, 0.38, 1.4, 16]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.4} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* ASA LESTE — Promenada de Conexão com o Distrito Federal (Saída da Resposta) */}
+      <group position={[16.5, -0.22, 2.6]}>
+        <mesh receiveShadow position={[0, 0, 0]}>
+          <boxGeometry args={[7.2, 0.36, 4.2]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.05} />
+        </mesh>
+        <mesh position={[0, -0.04, 0]}>
+          <boxGeometry args={[7.4, 0.08, 4.4]} />
+          <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
+        </mesh>
+        {/* Frisos de LED nas margens da promenada */}
+        <mesh position={[0, 0.19, 2.12]}>
+          <boxGeometry args={[7.2, 0.02, 0.05]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+        <mesh position={[0, 0.19, -2.12]}>
+          <boxGeometry args={[7.2, 0.02, 0.05]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+        {/* Pilares da Promenada Leste */}
+        {[-2.4, 2.4].map((px, i) => (
+          <mesh key={i} position={[px, -0.85, 0]}>
+            <cylinderGeometry args={[0.32, 0.38, 1.4, 16]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.4} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* MIRANTE NORTE — Terraço Semicircular debruçado sobre o Lago */}
+      <group position={[0, -0.22, -10.0]}>
+        <mesh receiveShadow position={[0, 0, 0]}>
+          <cylinderGeometry args={[4.4, 4.6, 0.36, 32, 1, false, Math.PI, Math.PI]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.28} metalness={0.05} />
+        </mesh>
+        <mesh position={[0, -0.04, 0]}>
+          <cylinderGeometry args={[4.55, 4.7, 0.08, 32, 1, false, Math.PI, Math.PI]} />
+          <meshStandardMaterial color="#1e40af" roughness={0.25} metalness={0.7} />
+        </mesh>
+        <mesh position={[0, 0.19, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[4.3, 4.42, 32, 1, 0, Math.PI]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+        {/* Pilar central do mirante */}
+        <mesh position={[0, -0.85, -2.5]}>
+          <cylinderGeometry args={[0.45, 0.52, 1.4, 24]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.4} />
+        </mesh>
+      </group>
+
+      {/* Moldura chanfrada intermediária da esplanada central em Azul Profundo SUS (#1e40af) */}
       <mesh position={[0, -0.24, 0]}>
         <boxGeometry args={[26.4, 0.1, 20.4]} />
         <meshStandardMaterial

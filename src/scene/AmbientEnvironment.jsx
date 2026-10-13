@@ -43,7 +43,7 @@ export default function AmbientEnvironment() {
         position={[0, -1.82, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
       >
-        <planeGeometry args={[120, 120]} />
+        <planeGeometry args={[800, 800]} />
         <MeshReflectorMaterial
           blur={[400, 100]}
           resolution={1024}
@@ -59,9 +59,9 @@ export default function AmbientEnvironment() {
         />
       </mesh>
 
-      {/* Grid arquitetônico de precisão subaquático */}
+      {/* Grid arquitetônico de precisão subaquático expandido até dissolver no horizonte */}
       <gridHelper
-        args={[100, 50, '#93c5fd', '#dbeafe']}
+        args={[500, 125, '#93c5fd', '#dbeafe']}
         position={[0, -1.80, 0]}
       />
 
