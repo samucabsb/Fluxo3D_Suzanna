@@ -115,33 +115,52 @@ export default function FlowParticle({
 
   return (
     <group ref={groupRef} position={[-9.0, 0.64, 3.8]}>
-      {/* 1. Núcleo cristalino em formato de gota/octaedro SUS Digital */}
+      {/* 1. Núcleo cristalino em formato de octaedro com alta refração */}
       <mesh ref={innerMeshRef} castShadow>
-        <octahedronGeometry args={[0.24, 0]} />
+        <octahedronGeometry args={[0.25, 0]} />
         <meshStandardMaterial
           color={particleColor}
           emissive={particleColor}
-          emissiveIntensity={1.3}
-          roughness={0.1}
-          metalness={0.9}
+          emissiveIntensity={1.4}
+          roughness={0.12}
+          metalness={0.88}
         />
       </mesh>
 
-      {/* 2. Halo de transparência líquida */}
+      {/* 2. Duplo anel giroscópico de contenção de dados clínicos */}
       <mesh ref={auraRef} rotation={[Math.PI / 4, 0, 0]}>
-        <torusGeometry args={[0.38, 0.02, 16, 32]} />
+        <torusGeometry args={[0.4, 0.02, 16, 36]} />
         <meshBasicMaterial
           color={particleColor}
           transparent
-          opacity={0.65}
+          opacity={0.7}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
+        <torusGeometry args={[0.34, 0.015, 16, 32]} />
+        <meshBasicMaterial
+          color="#ffffff"
+          transparent
+          opacity={0.5}
         />
       </mesh>
 
-      {/* 3. Luz pontual contextual de iluminação do canal */}
+      {/* 3. Aura esférica de bio-energia de saúde */}
+      <mesh>
+        <sphereGeometry args={[0.3, 16, 16]} />
+        <meshBasicMaterial
+          color={particleColor}
+          wireframe
+          transparent
+          opacity={0.25}
+        />
+      </mesh>
+
+      {/* 4. Luz pontual contextual de iluminação do duto */}
       <pointLight
         color={particleColor}
-        intensity={2.0}
-        distance={3.2}
+        intensity={2.4}
+        distance={3.6}
       />
     </group>
   );

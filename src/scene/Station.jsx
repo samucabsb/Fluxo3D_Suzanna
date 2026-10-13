@@ -174,6 +174,11 @@ export default function Station({
                   roughness={0.1}
                 />
               </mesh>
+              {/* Leitor de Cartão SUS / Biometria Cidadão */}
+              <mesh position={[0.2, 0.21, 0.12]}>
+                <cylinderGeometry args={[0.04, 0.04, 0.01, 16]} />
+                <meshBasicMaterial color="#10b981" />
+              </mesh>
             </group>
 
             {/* Núcleo de admissão de pergunta flutuante */}
@@ -237,6 +242,18 @@ export default function Station({
               />
             </mesh>
 
+            {/* Cruz Médica de Bioética Clínica no Escudo */}
+            <group position={[0, 1.05, -0.58]}>
+              <mesh>
+                <boxGeometry args={[0.42, 0.12, 0.02]} />
+                <meshBasicMaterial color={status === 'warning' ? '#fbbf24' : '#10b981'} opacity={0.85} transparent />
+              </mesh>
+              <mesh>
+                <boxGeometry args={[0.12, 0.42, 0.02]} />
+                <meshBasicMaterial color={status === 'warning' ? '#fbbf24' : '#10b981'} opacity={0.85} transparent />
+              </mesh>
+            </group>
+
             {/* Núcleo de triagem giroscópico */}
             <group ref={innerRef} position={[0, 1.25, 0]}>
               <mesh castShadow>
@@ -292,7 +309,7 @@ export default function Station({
               <meshStandardMaterial color="#2563eb" roughness={0.25} metalness={0.7} />
             </mesh>
 
-            {/* Placas/Lâminas translúcidas de dados (chunks RAG) */}
+            {/* Placas/Lâminas translúcidas de dados (chunks RAG SES-DF) */}
             {[-0.2, 0.2].map((offZ, idx) => (
               <mesh key={idx} position={[0.75, 1.35, -0.6 + offZ]}>
                 <boxGeometry args={[0.62, 1.85, 0.04]} />
@@ -336,7 +353,7 @@ export default function Station({
         );
 
       case 'generation':
-        // 4. Núcleo de Linguagem: Reator central com anéis magnéticos de levitação
+        // 4. Núcleo de Linguagem: Reator central com Cúpula de Niemeyer e anéis de levitação
         return (
           <group position={[0, 0.22, 0]}>
             <mesh castShadow receiveShadow position={[0, 0.35, 0]}>
@@ -347,28 +364,47 @@ export default function Station({
               <cylinderGeometry args={[1.9, 1.95, 0.08, 36]} />
               <meshStandardMaterial color="#1e40af" roughness={0.3} metalness={0.7} />
             </mesh>
-            <mesh position={[0, 0.72, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <torusGeometry args={[1.3, 0.07, 16, 48]} />
-              <meshStandardMaterial color="#1e40af" metalness={0.8} roughness={0.2} />
+
+            {/* Cúpula de Niemeyer Translúcida (Metáfora Museu Nacional de Brasília) */}
+            <mesh position={[0, 0.72, 0]}>
+              <sphereGeometry args={[1.52, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+              <meshPhysicalMaterial
+                color="#e0f2fe"
+                transmission={0.82}
+                thickness={0.8}
+                roughness={0.15}
+                ior={1.45}
+                transparent
+                opacity={0.65}
+              />
+            </mesh>
+            {/* Anel Equatorial da Cúpula de Niemeyer */}
+            <mesh position={[0, 0.74, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[1.54, 0.035, 16, 48]} />
+              <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.2} />
+            </mesh>
+            <mesh position={[0, 0.74, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[1.56, 0.015, 8, 48]} />
+              <meshBasicMaterial color={stateColors.glow} />
             </mesh>
 
-            {/* 4 Pilares de contenção quádruplos */}
+            {/* 4 Pilares de sustentação de arco */}
             {[-1.0, 1.0].map((px) =>
               [-1.0, 1.0].map((pz) => (
                 <group key={`${px}-${pz}`} position={[px, 1.1, pz]}>
                   <mesh castShadow>
-                    <cylinderGeometry args={[0.1, 0.14, 1.5, 16]} />
+                    <cylinderGeometry args={[0.08, 0.12, 1.5, 16]} />
                     <meshStandardMaterial color="#0a1b3d" roughness={0.2} metalness={0.8} />
                   </mesh>
                   <mesh position={[0, 0.78, 0]}>
-                    <sphereGeometry args={[0.09, 16, 16]} />
+                    <sphereGeometry args={[0.08, 16, 16]} />
                     <meshBasicMaterial color={stateColors.glow} />
                   </mesh>
                 </group>
               ))
             )}
 
-            {/* Núcleo do LLM: dodecaedro cristalino com gaiola icosaédrica */}
+            {/* Núcleo do LLM: dodecaedro cristalino protegido sob a cúpula */}
             <group ref={innerRef} position={[0, 1.45, 0]}>
               <mesh castShadow>
                 <dodecahedronGeometry args={[0.55, 0]} />
@@ -433,6 +469,12 @@ export default function Station({
                 transparent
                 opacity={0.8}
               />
+            </mesh>
+
+            {/* Selo circular de auditoria de fontes oficiais em Verde Esmeralda */}
+            <mesh position={[0, 1.7, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.38, 0.44, 32]} />
+              <meshBasicMaterial color="#10b981" opacity={0.8} transparent />
             </mesh>
 
             {/* Prisma hexagonal de auditoria de fontes */}

@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
+import BrasiliaArchitecture from './BrasiliaArchitecture';
 import Ground from './Ground';
 import AmbientEnvironment from './AmbientEnvironment';
 import Station from './Station';
@@ -37,18 +38,18 @@ export default function World({
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.06
+          toneMappingExposure: 1.08
         }}
         onPointerMissed={() => {
           // Mantém seleção intencional sem deselecionar acidentalmente
         }}
       >
-        {/* Fundo e neblina alinhados com o token --bg do SUS Digital (#f5f9ff) */}
-        <color attach="background" args={['#f5f9ff']} />
-        <fog attach="fog" args={['#f5f9ff', 40, 85]} />
+        {/* Fundo e neblina do Lago Paranoá / Cerrado tecnológico */}
+        <color attach="background" args={['#f4f8fe']} />
+        <fog attach="fog" args={['#f4f8fe', 42, 95]} />
 
         {/* 1. Iluminação de estúdio profissional (Key, Fill, Rim & Ambient) */}
-        <ambientLight intensity={0.7} />
+        <ambientLight intensity={0.72} />
         <hemisphereLight
           skyColor="#ffffff"
           groundColor="#dbeafe"
@@ -57,7 +58,7 @@ export default function World({
         {/* Key Light com sombras nítidas e suaves */}
         <directionalLight
           position={[16, 26, 14]}
-          intensity={1.35}
+          intensity={1.4}
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
@@ -69,10 +70,10 @@ export default function World({
           shadow-camera-bottom={-20}
           shadow-bias={-0.0001}
         />
-        {/* Rim Light / Contra-luz azul-gelo para realçar chanfros e silhuetas */}
+        {/* Rim Light / Contra-luz azul-gelo para realçar colunas e chanfros */}
         <directionalLight
           position={[-16, 18, -14]}
-          intensity={0.75}
+          intensity={0.8}
           color="#93c5fd"
         />
         {/* Fill frontal suave */}
@@ -83,20 +84,23 @@ export default function World({
         />
 
         <Suspense fallback={null}>
-          {/* Ambiente contextual: lâmina líquida, pilares e partículas de dados */}
+          {/* Ambiente contextual: lâmina líquida reflexiva, pilares e partículas */}
           <AmbientEnvironment />
 
-          {/* Piso arquitetônico e praças SUS Digital */}
+          {/* Monumentos de Brasília: Colunata Alvorada, Congresso, Catedral, Ponte JK e Burle Marx */}
+          <BrasiliaArchitecture />
+
+          {/* Piso arquitetônico e praça com Cruz da Saúde SUS Digital */}
           <Ground />
 
-          {/* Sombras de contato suaves de alta qualidade */}
+          {/* Sombras de contato suaves no piso da esplanada */}
           <ContactShadows
-            position={[0, 0.01, 0]}
-            opacity={0.30}
-            scale={28}
-            blur={2.4}
-            far={4}
-            color="#0a1b3d"
+            position={[0, 0.015, 0]}
+            opacity={0.16}
+            scale={25}
+            blur={2.0}
+            far={3}
+            color="#1e3a8a"
           />
 
           {/* Dutos de dados elevados com trajetória contínua */}
