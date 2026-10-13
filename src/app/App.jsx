@@ -27,7 +27,7 @@ function getLiveBadge(result) {
 export default function App() {
   const [execution, setExecution] = useState(() => createDemoExecution('scenario-a'));
   const [selectedStationId, setSelectedStationId] = useState('input');
-  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [mode, setMode] = useState('demo');
   const [isApiHealthy, setIsApiHealthy] = useState(false);
   const [cameraResetSignal, setCameraResetSignal] = useState(0);
@@ -139,7 +139,7 @@ export default function App() {
       setIsTourPlaying(true);
       setIsPaused(false);
       setSelectedStationId(STATIONS_METADATA[0].id);
-      setInspectorOpen(true);
+      setInspectorOpen(false);
       setIsGuidedTour(true);
     } else {
       setIsGuidedTour(false);
@@ -389,9 +389,9 @@ export default function App() {
           <button
             type="button"
             onClick={() => setInspectorOpen(true)}
-            className="absolute top-4 right-4 z-10 px-3 py-2 rounded-2xl glass-panel text-xs font-semibold text-sus-ink hover:text-sus-deep shadow-md flex items-center gap-2 pointer-events-auto transition-all"
+            className="absolute top-4 right-4 z-10 px-3.5 py-2 rounded-2xl glass-panel text-xs font-bold text-slate-800 hover:text-blue-700 shadow-md flex items-center gap-2 pointer-events-auto transition-all bg-white/90 border border-white/80"
           >
-            <span>Abrir Inspetor</span>
+            <span>Ver Detalhes da Etapa</span>
           </button>
         )}
       </div>

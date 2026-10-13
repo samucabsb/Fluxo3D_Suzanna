@@ -882,42 +882,29 @@ export default function Station({
         style={{ pointerEvents: 'none' }}
       >
         {isSelected || isActive ? (
-          <div className="flex flex-col items-center gap-1 drop-shadow-xl select-none">
-            {/* Pill de Alto Contraste: Fundo Ink Azul Profundo com Texto Branco Puro e LED Ciano */}
-            <div
-              className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-2xl border flex items-center gap-2 ${
-                isSelected
-                  ? 'bg-[#0a1b3d] text-white border-[#38bdf8] ring-2 ring-[#38bdf8]/40'
-                  : 'bg-[#1e40af] text-white border-[#60a5fa] animate-pulse'
-              }`}
-            >
-              <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8] shadow-sm animate-ping" />
-              <span className="tracking-wide text-white drop-shadow-sm">{station.name}</span>
-            </div>
-            {/* Subtítulo em Cartão Branco Nítido com Texto Escuro Legível */}
-            <span className="text-[10px] font-bold text-[#0a1b3d] bg-white px-3 py-0.5 rounded-md border border-[#93c5fd] shadow-md">
-              {station.subtitle}
-            </span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-xl border bg-[#0a1b3d]/95 backdrop-blur-md text-white border-[#38bdf8] select-none">
+            <span className="w-2 h-2 rounded-full bg-[#38bdf8] shadow-sm animate-ping" />
+            <span className="tracking-wide text-white">{station.stepNumber}. {station.shortName || station.name}</span>
           </div>
         ) : hovered ? (
-          <div className="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-xl border bg-[#0a1b3d] text-white border-[#60a5fa] transition-all flex items-center gap-2 select-none">
-            <span className="w-2 h-2 rounded-full bg-[#38bdf8]" />
-            <span className="text-white drop-shadow-sm">{station.shortName || station.name.split('—')[0]}</span>
+          <div className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap shadow-lg border bg-[#0a1b3d]/90 text-white border-[#60a5fa] transition-all flex items-center gap-2 select-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8]" />
+            <span className="text-white">{station.stepNumber}. {station.shortName || station.name}</span>
           </div>
         ) : (
           <div
-            className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shadow-lg border-2 transition-all duration-200 select-none ${
+            className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shadow-md border transition-all duration-200 select-none ${
               status === 'completed'
-                ? 'bg-emerald-600 text-white border-white ring-2 ring-emerald-500/50'
+                ? 'bg-emerald-600 text-white border-white ring-1 ring-emerald-400'
                 : status === 'warning'
-                ? 'bg-amber-500 text-white border-white ring-2 ring-amber-400/50'
+                ? 'bg-amber-500 text-white border-white ring-1 ring-amber-400'
                 : status === 'skipped'
                 ? 'bg-slate-400 text-white border-white opacity-70'
-                : 'bg-[#0a1b3d] text-white border-[#38bdf8] shadow-md ring-1 ring-[#0a1b3d]/30'
+                : 'bg-[#0a1b3d] text-white border-[#38bdf8]'
             }`}
             title={station.name}
           >
-            {station.stepNumber || station.id.charAt(0).toUpperCase()}
+            {station.stepNumber}
           </div>
         )}
       </Html>

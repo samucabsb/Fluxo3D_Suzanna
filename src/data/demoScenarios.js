@@ -220,85 +220,85 @@ export const STATIONS_METADATA = [
   {
     id: 'input',
     stepNumber: 1,
-    name: '1. Entrada do Usuário & Sessão',
+    name: 'Entrada do Usuário & Sessão',
     shortName: 'Entrada & Sessão',
-    subtitle: 'Recepção de Linguagem Natural & Sessão',
+    subtitle: 'Recepção da Pergunta & Sessão',
+    didactic: 'Recebe a dúvida do cidadão em linguagem natural e inicia a sessão de atendimento.',
     description: 'Ponto inicial de recepção da pergunta do cidadão em linguagem natural e inicialização da sessão com telemetria.',
-    details: 'Recebe o texto enviado pelo usuário ou aplicativo de chat, registra o identificador único de sessão, higieniza os dados de entrada e prepara o pacote para triagem.',
-    tourNote: 'Aqui o cidadão envia a pergunta. A Susana recebe a mensagem em linguagem natural, inicializa a sessão e inicia o ciclo.',
+    tourNote: 'Aqui o cidadão envia a pergunta. A Susana recebe a mensagem em linguagem natural e inicializa a sessão.',
     position: [-12.0, 0, 4.8],
     cameraTarget: [-12.0, 1.4, 4.8],
-    color: '#0284c7', // Sky Blue
+    color: '#0284c7',
     icon: 'MessageSquare'
   },
   {
     id: 'scope',
     stepNumber: 2,
-    name: '2. Triagem de Segurança',
+    name: 'Triagem de Segurança',
     shortName: 'Triagem de Segurança',
     subtitle: 'Guardrails Clínicos & Escopo',
+    didactic: 'Filtra pedidos de receita ou autodiagnóstico, protegendo o cidadão e garantindo a ética médica.',
     description: 'Avalia conformidade ética com as diretrizes do SUS-DF, aplicando guardrails preventivos contra autodiagnóstico ou receitas.',
-    details: 'Classifica a intenção da consulta contra a matriz ética do SUS-DF. Perguntas sobre localização e acesso avançam; solicitações de receita médica são interceptadas com acolhimento preventivo.',
-    tourNote: 'Triagem de segurança: A Susana verifica se a dúvida é sobre acesso a serviços. Perguntas sobre diagnósticos ou remédios são barradas aqui por ética médica.',
+    tourNote: 'Triagem ética: Verifica se a dúvida é sobre serviços de saúde do DF. Pedidos de remédios ou diagnósticos são barrados por segurança.',
     position: [-6.0, 0, 2.2],
     cameraTarget: [-6.0, 1.4, 2.2],
-    color: '#0d9488', // Teal
+    color: '#0d9488',
     icon: 'ShieldCheck'
   },
   {
     id: 'entities',
     stepNumber: 3,
-    name: '3. Resolução de Entidades',
-    shortName: 'NLU & Território DF',
+    name: 'Resolução de Entidades',
+    shortName: 'Resolução de Entidades',
     subtitle: 'NLU & Território DF',
+    didactic: 'Identifica sintomas, o tipo de unidade (UPA/UBS) e a região do Distrito Federal citada.',
     description: 'Processamento de Linguagem Natural (NLU) para extração de entidades clínicas, equipamentos do SUS e mapeamento geográfico no DF.',
-    details: 'Identifica unidades de saúde (UPAs, UBSs, Policlínicas, CAPS), regiões de saúde do DF, níveis de urgência e especialidades para formular filtros semânticos estruturados na busca.',
-    tourNote: 'NLU e Território: O modelo identifica exatamente as unidades do SUS, bairros e regiões do DF citados na pergunta para focar a pesquisa.',
+    tourNote: 'Mapeamento no DF: O modelo identifica unidades do SUS, bairros e regiões do DF citados para focar a pesquisa.',
     position: [-2.5, 0, -5.5],
     cameraTarget: [-2.5, 1.6, -5.5],
-    color: '#06b6d4', // Cyan
-    icon: 'MapPin'
+    color: '#06b6d4',
+    icon: 'Compass'
   },
   {
     id: 'retrieval',
     stepNumber: 4,
-    name: '4. Recuperação de Evidências',
-    shortName: 'RAG Híbrido',
+    name: 'Recuperação de Evidências',
+    shortName: 'Recuperação de Evidências',
     subtitle: 'RAG Híbrido & Fontes Oficiais',
+    didactic: 'Busca trechos em documentos e portarias oficiais da SES-DF e IgesDF. Se não encontrar, não inventa.',
     description: 'Busca híbrida combinando busca vetorial semântica (pgvector 768d nomic-embed) e busca lexical (BM25) em documentos oficiais da SES-DF e IgesDF.',
-    details: 'Localiza trechos com alta similaridade semântica em portarias, normativas e cartas de serviços do SUS-DF indexados com embeddings vetoriais de 768 dimensões.',
-    tourNote: 'RAG Híbrido: O sistema busca trechos oficiais em documentos da SES-DF. Se os documentos oficiais não contiverem a resposta, o sistema não alucina.',
+    tourNote: 'Busca Oficial (RAG): Procura documentos oficiais da SES-DF. Se a base não contiver a resposta, o sistema não alucina.',
     position: [3.2, 0, -0.5],
     cameraTarget: [3.2, 1.8, -0.5],
-    color: '#6366f1', // Indigo
+    color: '#6366f1',
     icon: 'Database'
   },
   {
     id: 'generation',
     stepNumber: 5,
-    name: '5. Geração Fundamentada',
-    shortName: 'Geração LLM',
+    name: 'Geração Fundamentada',
+    shortName: 'Geração Fundamentada',
     subtitle: 'Núcleo de LLM com Prompt Restritivo',
+    didactic: 'O modelo de Inteligência Artificial redige a resposta usando somente os fatos oficiais encontrados.',
     description: 'Síntese da resposta pelo modelo LLM (Llama 3.2 3B via Ollama) executada sob prompt restritivo com proibição de alucinação.',
-    details: 'Recebe a pergunta original combinada com os trechos oficiais recuperados. O modelo opera com diretriz restritiva rígida, respondendo estritamente com base nos fatos oficiais verificados.',
-    tourNote: 'Síntese fundamentada: O modelo Llama 3.2 formula a resposta restrito unicamente aos trechos recuperados na etapa anterior.',
+    tourNote: 'Síntese com IA: O modelo Llama 3.2 redige a resposta restrito unicamente às evidências oficiais recuperadas.',
     position: [8.0, 0, -4.8],
     cameraTarget: [8.0, 1.5, -4.8],
-    color: '#8b5cf6', // Violet
+    color: '#8b5cf6',
     icon: 'Cpu'
   },
   {
     id: 'output',
     stepNumber: 6,
-    name: '6. Entrega com Citações',
-    shortName: 'Entrega & Citações',
+    name: 'Entrega com Citações',
+    shortName: 'Entrega com Citações',
     subtitle: 'Streaming, Referências & Interface',
+    didactic: 'Apresenta a resposta final ao cidadão junto com as fontes oficiais citadas para conferência.',
     description: 'Apresentação da resposta ao usuário em streaming, com badges de status, links diretos para auditoria das fontes oficiais e síntese.',
-    details: 'Disponibiliza a resposta final com auditoria transparente de fontes da SES-DF/IgesDF, permitindo conferência pelo cidadão e garantindo integridade.',
-    tourNote: 'Entrega com Citações: A resposta é apresentada com transparência total de fontes, links oficiais e indicador de desfecho da consulta.',
+    tourNote: 'Entrega com Citações: A resposta é apresentada com total transparência de fontes e links oficiais da SES-DF.',
     position: [12.5, 0, 3.4],
     cameraTarget: [12.5, 1.4, 3.4],
-    color: '#10b981', // Emerald
-    icon: 'Send'
+    color: '#10b981',
+    icon: 'Share2'
   }
 ];

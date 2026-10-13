@@ -57,14 +57,20 @@ export default function GuidedTourBar({
       </div>
 
       {/* Título e Explicação Didática */}
-      <div className="mb-3.5 space-y-1">
-        <h3 className="text-sm font-bold text-sus-ink flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-sus-primary" />
-          <span>{currentStation.name}</span>
-          <span className="text-xs font-normal text-sus-muted">({currentStation.subtitle})</span>
-        </h3>
-        <p className="text-xs text-sus-ink/80 leading-relaxed bg-white/70 p-2.5 rounded-2xl border border-white/80">
-          {currentStation.tourNote || currentStation.description}
+      <div className="mb-3.5 space-y-1.5">
+        <div className="flex items-center gap-2">
+          <span className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
+            {currentStation.stepNumber}
+          </span>
+          <h3 className="text-base font-bold text-slate-900 leading-tight">
+            {currentStation.name}
+          </h3>
+          <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+            ({currentStation.subtitle})
+          </span>
+        </div>
+        <p className="text-sm text-slate-700 leading-relaxed font-medium bg-white/90 p-3 rounded-2xl border border-slate-100">
+          {currentStation.didactic || currentStation.tourNote}
         </p>
       </div>
 

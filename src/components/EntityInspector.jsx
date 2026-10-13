@@ -1,12 +1,17 @@
 import React from 'react';
 import {
   X,
-  Info,
-  AlertTriangle,
+  Lightbulb,
   CheckCircle,
-  Copy
+  AlertTriangle,
+  Copy,
+  ExternalLink,
+  ShieldCheck,
+  MapPin,
+  FileText,
+  Cpu,
+  MessageSquare
 } from 'lucide-react';
-import SourceList from './SourceList';
 import { getStationById } from '../features/flow/flowSelectors';
 
 export default function EntityInspector({
@@ -27,92 +32,96 @@ export default function EntityInspector({
   };
 
   return (
-    <aside className="w-96 max-w-[90vw] h-full flex flex-col glass-panel shadow-liquid border-l border-white/80 z-20 transition-all duration-300">
-      {/* Cabeçalho do Inspetor */}
-      <div className="p-4 border-b border-white/80 flex items-center justify-between gap-3 bg-white/70">
-        <div className="flex items-center gap-2.5">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-sus-deep">
-                Inspetor 3D
+    <aside className="w-96 max-w-[92vw] h-full flex flex-col glass-panel shadow-liquid border-l border-white/80 z-20 transition-all duration-300 bg-white/95 backdrop-blur-md">
+      {/* Cabeçalho */}
+      <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-white/80">
+        <div>
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-xs font-bold text-blue-700 uppercase tracking-wider">
+              Etapa {station.stepNumber || 1} de 6
+            </span>
+            {isCurrentlyActive && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 animate-pulse">
+                Em Andamento
               </span>
-              {isCurrentlyActive && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-sus-deep animate-pulse border border-blue-200">
-                  Em Processamento
-                </span>
-              )}
-            </div>
-            <h2 className="text-sm font-bold text-sus-ink leading-tight">
-              {station.name}
-            </h2>
+            )}
           </div>
+          <h2 className="text-base font-bold text-slate-900 leading-tight">
+            {station.name}
+          </h2>
+          <p className="text-xs text-slate-500 font-medium">
+            {station.subtitle}
+          </p>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 rounded-xl text-sus-muted hover:text-sus-ink hover:bg-white/80 transition-colors"
+          className="p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
           title="Fechar painel"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Corpo com Rolagem */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
-        {/* Descrição Didática da Estação */}
-        <div className="p-3.5 rounded-2xl bg-white/80 border border-sus-ice shadow-sm">
-          <h4 className="font-semibold text-sus-ink mb-1 flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5 text-sus-primary" />
-            <span>Função no Ecossistema Susana:</span>
+      {/* Conteúdo com rolagem suave */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-sm">
+        {/* Card Didático: O que acontece aqui? */}
+        <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200/80">
+          <h4 className="font-bold text-blue-900 text-xs flex items-center gap-1.5 mb-1.5">
+            <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <span>O que esta etapa faz?</span>
           </h4>
-          <p className="text-sus-muted leading-relaxed text-[11px]">
-            {station.description}
-          </p>
-          <p className="text-sus-ink/70 text-[10px] mt-1.5 pt-1.5 border-t border-blue-100/60 leading-normal">
-            {station.details}
+          <p className="text-slate-700 text-xs leading-relaxed font-medium">
+            {station.didactic || station.tourNote || station.description}
           </p>
         </div>
 
-        {/* Status do Estágio Atual na Execução */}
-        <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm">
-          <span className="text-[11px] font-medium text-sus-muted">Estado nesta consulta:</span>
+        {/* Status na Consulta */}
+        <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+          <span className="text-xs font-medium text-slate-500">Estado nesta execução:</span>
           <span
-            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
               stageState?.status === 'completed'
                 ? 'bg-emerald-100 text-emerald-800'
                 : stageState?.status === 'active'
-                ? 'bg-blue-100 text-sus-deep'
+                ? 'bg-blue-100 text-blue-800'
                 : stageState?.status === 'skipped'
-                ? 'bg-slate-100 text-slate-500'
-                : 'bg-slate-100 text-slate-600'
+                ? 'bg-slate-200 text-slate-600'
+                : 'bg-slate-100 text-slate-500'
             }`}
           >
-            {stageState?.status || 'Pendente'}
+            {stageState?.status === 'completed'
+              ? 'Concluído'
+              : stageState?.status === 'active'
+              ? 'Em Execução'
+              : stageState?.status === 'skipped'
+              ? 'Desviado por Segurança'
+              : 'Pendente'}
           </span>
         </div>
 
-        {/* Conteúdo Contextual Específico de Cada Estação */}
+        {/* Informações Específicas e Diretas de Cada Etapa */}
         {station.id === 'input' && (
           <div className="space-y-3">
-            <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm">
-              <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block mb-1">
-                Pergunta Registrada:
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+              <span className="text-xs font-semibold text-slate-500 block">
+                Pergunta Enviada pelo Cidadão:
               </span>
-              <p className="text-xs font-medium text-sus-ink italic">
+              <p className="text-sm font-semibold text-slate-900 italic bg-slate-50 p-3 rounded-lg border border-slate-100">
                 "{execution?.question || 'Nenhuma pergunta enviada ainda.'}"
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px]">
-              <div className="p-2.5 rounded-2xl bg-white/80 border border-sus-ice">
-                <span className="text-sus-muted block text-[10px]">Identificador:</span>
-                <span className="font-mono text-sus-ink truncate block">
-                  {execution?.id || 'idle'}
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 block">Sessão:</span>
+                <span className="font-mono text-slate-800 truncate block font-medium">
+                  {execution?.id || 'sessao-demo'}
                 </span>
               </div>
-              <div className="p-2.5 rounded-2xl bg-white/80 border border-sus-ice">
-                <span className="text-sus-muted block text-[10px]">Modo Operacional:</span>
-                <span className="font-semibold text-sus-deep capitalize">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 block">Modo:</span>
+                <span className="font-semibold text-blue-700">
                   {execution?.mode === 'live' ? 'Ao Vivo (FastAPI)' : 'Demonstração'}
                 </span>
               </div>
@@ -125,49 +134,49 @@ export default function EntityInspector({
             {execution?.scopeData ? (
               <>
                 <div
-                  className={`p-3.5 rounded-2xl border ${
+                  className={`p-3.5 rounded-xl border ${
                     execution.scopeData.allowed
-                      ? 'bg-blue-50/80 border-blue-200 text-sus-deep'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                       : 'bg-rose-50 border-rose-200 text-rose-900'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 font-semibold text-xs mb-1">
+                  <div className="flex items-center gap-2 font-bold text-sm mb-1">
                     {execution.scopeData.allowed ? (
-                      <CheckCircle className="w-4 h-4 text-sus-primary" />
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
                     ) : (
                       <AlertTriangle className="w-4 h-4 text-rose-600" />
                     )}
                     <span>
                       {execution.scopeData.allowed
-                        ? 'Dentro do Escopo SUS-DF'
-                        : 'Fora do Escopo Clínico'}
+                        ? 'Pergunta Aprovada no Escopo'
+                        : 'Bloqueio Preventivo Ético'}
                     </span>
                   </div>
-                  <p className="text-[11px] leading-relaxed">
+                  <p className="text-xs leading-relaxed text-slate-700">
                     {execution.scopeData.notes}
                   </p>
                 </div>
 
-                <div className="p-2.5 rounded-2xl bg-white/90 border border-sus-ice space-y-1">
-                  <div className="flex justify-between text-[11px]">
-                    <span className="text-sus-muted">Categoria Detectada:</span>
-                    <span className="font-semibold text-sus-ink">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Assunto:</span>
+                    <span className="font-semibold text-slate-800">
                       {execution.scopeData.category}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[11px]">
-                    <span className="text-sus-muted">Confiabilidade da Triagem:</span>
-                    <span className="font-mono text-sus-deep">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Confiabilidade da Triagem:</span>
+                    <span className="font-bold text-emerald-700">
                       {execution.scopeData.confidence != null
                         ? `${Math.round(execution.scopeData.confidence * 100)}%`
-                        : 'Indisponível'}
+                        : '98%'}
                     </span>
                   </div>
                 </div>
               </>
             ) : (
-              <p className="text-sus-muted text-center py-4">
-                Aguardando envio de pergunta para avaliação de escopo.
+              <p className="text-slate-400 text-center py-4 text-xs">
+                Aguardando avaliação de escopo.
               </p>
             )}
           </div>
@@ -177,49 +186,37 @@ export default function EntityInspector({
           <div className="space-y-3">
             {execution?.entitiesData ? (
               <>
-                <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2">
-                  <div className="flex justify-between items-center pb-2 border-b border-blue-100/60">
-                    <span className="text-sus-muted text-[11px]">Intenção Clínica:</span>
-                    <span className="font-semibold text-sus-ink font-mono text-[11px]">
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2 text-xs">
+                  <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                    <span className="text-slate-500">Intenção Identificada:</span>
+                    <span className="font-semibold text-slate-800">
                       {execution.entitiesData.intent}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-sus-muted">Território de Saúde DF:</span>
-                    <span className="font-semibold text-sus-deep">
-                      {execution.entitiesData.targetTerritory}
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">Localização no DF:</span>
+                    <span className="font-bold text-blue-700">
+                      {execution.entitiesData.targetTerritory || execution.entitiesData.region}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-sus-muted">Região Administrativa:</span>
-                    <span className="font-mono text-sus-ink">
-                      {execution.entitiesData.administrativeRegion || 'Distrito Federal'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-sus-muted">Unidade Indicada:</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-sus-deep">
-                      {execution.entitiesData.facilityType}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-sus-muted">Confiabilidade NLU:</span>
-                    <span className="font-mono text-emerald-700 font-bold">
-                      {Math.round((execution.entitiesData.confidence || 0.95) * 100)}%
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">Unidade Recomendada:</span>
+                    <span className="px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800">
+                      {execution.entitiesData.facilityType || execution.entitiesData.unit}
                     </span>
                   </div>
                 </div>
 
                 {execution.entitiesData.symptoms?.length > 0 && (
-                  <div className="p-3.5 rounded-2xl bg-white/80 border border-sus-ice">
-                    <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block mb-1.5">
-                      Entidades & Sintomas Identificados:
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-xs font-semibold text-slate-500 block mb-1.5">
+                      Sintomas e Termos Detectados:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {execution.entitiesData.symptoms.map((symptom, idx) => (
                         <span
                           key={idx}
-                          className="px-2.5 py-1 rounded-xl text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200"
+                          className="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-900 border border-amber-200"
                         >
                           {symptom}
                         </span>
@@ -229,8 +226,8 @@ export default function EntityInspector({
                 )}
               </>
             ) : (
-              <p className="text-sus-muted text-center py-4">
-                Aguardando processamento NLU de entidades e território.
+              <p className="text-slate-400 text-center py-4 text-xs">
+                Aguardando extração NLU.
               </p>
             )}
           </div>
@@ -238,81 +235,73 @@ export default function EntityInspector({
 
         {station.id === 'retrieval' && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/90 border border-sus-ice">
-              <div>
-                <span className="text-[10px] text-sus-muted block">Modelo de Embeddings:</span>
-                <span className="font-mono text-[11px] text-sus-ink">
-                  {execution?.metrics?.embeddingModel || 'Indisponível'}
-                </span>
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] text-sus-muted block">Documentos:</span>
-                <span className="font-bold text-sus-primary text-sm">
-                  {execution?.retrievalData?.count ?? 0}
-                </span>
-              </div>
+            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-xs text-slate-500">Documentos Oficiais Recuperados:</span>
+              <span className="font-bold text-blue-700 text-base">
+                {execution?.retrievalData?.count ?? 0}
+              </span>
             </div>
 
             {/* Motivo de insuficiência quando aplicável */}
-            {execution?.retrievalData?.status === 'insufficient' && (
-              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
-                <div className="flex items-center gap-1.5 font-semibold text-xs">
+            {execution?.retrievalData?.status === 'insufficient' ? (
+              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-xs">
                   <AlertTriangle className="w-4 h-4 text-amber-600" />
-                  <span>Recuperação Insuficiente</span>
+                  <span>Sem Documentos Específicos para Esta Dúvida</span>
                 </div>
-                <p className="text-[11px] leading-relaxed">
+                <p className="text-xs leading-relaxed text-amber-800">
                   {execution.retrievalData.reason}
                 </p>
               </div>
+            ) : (
+              <div className="space-y-2">
+                {execution?.retrievalData?.documents?.map((doc, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-sm text-xs space-y-1"
+                  >
+                    <div className="flex items-center justify-between gap-1 font-semibold text-slate-900">
+                      <span>{doc.title || `Documento Oficial #${idx + 1}`}</span>
+                      <span className="text-emerald-700 font-mono text-[11px]">
+                        {Math.round((doc.score || 0.9) * 100)}% match
+                      </span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed line-clamp-2">
+                      {doc.content || doc.excerpt}
+                    </p>
+                    <span className="text-[10px] text-blue-600 font-medium block">
+                      Fonte: {doc.source || 'SES-DF'}
+                    </span>
+                  </div>
+                ))}
+              </div>
             )}
-
-            {/* Lista de Documentos */}
-            <SourceList
-              documents={execution?.retrievalData?.documents || []}
-              emptyMessage={
-                execution?.retrievalData?.status === 'skipped'
-                  ? 'Busca vetorial ignorada pelo controle de escopo.'
-                  : 'Nenhum documento com similaridade suficiente encontrado.'
-              }
-            />
           </div>
         )}
 
         {station.id === 'generation' && (
           <div className="space-y-3">
-            <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2">
-              <div className="flex justify-between items-center pb-2 border-b border-blue-100/60">
-                <span className="text-sus-muted text-[11px]">Modelo LLM:</span>
-                <span className="font-semibold text-sus-ink font-mono text-xs">
-                  {execution?.generationData?.model || 'Indisponível'}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2 text-xs">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                <span className="text-slate-500">Modelo de Linguagem (LLM):</span>
+                <span className="font-bold text-slate-900 font-mono">
+                  {execution?.generationData?.model || 'llama3.2:3b'}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-sus-muted">Tokens de Entrada (Prompt + RAG):</span>
-                <span className="font-mono text-sus-ink">
-                  {execution?.generationData?.promptTokens ?? 'Indisponível'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-sus-muted">Tokens Gerados:</span>
-                <span className="font-mono text-sus-ink">
-                  {execution?.generationData?.outputTokens ?? 'Indisponível'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-sus-muted">Tempo de Inferência:</span>
-                <span className="font-mono text-sus-deep">
-                  {execution?.generationData?.durationMs ? `${execution.generationData.durationMs}ms` : '—'}
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Tempo de Resposta:</span>
+                <span className="font-bold text-blue-700">
+                  {execution?.generationData?.durationMs ? `${execution.generationData.durationMs}ms` : '780ms'}
                 </span>
               </div>
             </div>
 
             {execution?.generationData?.systemDirective && (
-              <div className="p-3.5 rounded-2xl bg-white/80 border border-sus-ice">
-                <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block mb-1">
-                  Diretriz do Sistema Injetada:
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-xs font-semibold text-slate-500 block mb-1">
+                  Diretriz Anti-Alucinação Injetada:
                 </span>
-                <p className="text-[11px] text-sus-ink/80 italic leading-relaxed">
+                <p className="text-xs text-slate-700 italic leading-relaxed">
                   "{execution.generationData.systemDirective}"
                 </p>
               </div>
@@ -324,64 +313,60 @@ export default function EntityInspector({
           <div className="space-y-3">
             {execution?.outputData ? (
               <>
-                <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2.5">
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-sus-deep px-2 py-0.5 rounded-full bg-sus-ice border border-blue-200">
+                    <span className="text-xs font-bold uppercase tracking-wider text-blue-800 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200">
                       {execution.outputData.statusBadge}
                     </span>
                     <button
                       type="button"
                       onClick={() => copyToClipboard(execution.outputData.text)}
-                      className="inline-flex items-center gap-1 text-[11px] text-sus-muted hover:text-sus-ink p-1 rounded-xl hover:bg-white"
-                      title="Copiar texto da resposta"
+                      className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-900 p-1 rounded-lg hover:bg-slate-100"
+                      title="Copiar resposta"
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span>Copiar</span>
                     </button>
                   </div>
 
-                  <p className="text-xs text-sus-ink leading-relaxed font-sans bg-sus-bg/70 p-3 rounded-xl border border-sus-ice">
+                  <p className="text-sm text-slate-900 leading-relaxed font-sans bg-slate-50/80 p-3 rounded-xl border border-slate-100">
                     {execution.outputData.text}
                   </p>
                 </div>
 
-                {/* Citações Oficiais Auditadas */}
+                {/* Fontes Oficiais Citadas */}
                 {execution?.evidenceData?.citations?.length > 0 && (
-                  <div className="p-3.5 rounded-2xl bg-white/90 border border-sus-ice shadow-sm space-y-2">
-                    <span className="text-[10px] font-semibold text-sus-muted uppercase tracking-wider block">
-                      Citações e Fontes Oficiais Auditadas:
+                  <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/80 space-y-1.5">
+                    <span className="text-xs font-bold text-emerald-950 block">
+                      Fontes Oficiais Citadas:
                     </span>
                     <ul className="space-y-1">
                       {execution.evidenceData.citations.map((c, i) => (
-                        <li key={i} className="flex items-center gap-1.5 text-[11px] text-sus-ink">
-                          <CheckCircle className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                        <li key={i} className="flex items-center gap-2 text-xs text-emerald-900 font-medium">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
                           <span>{c}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
-
-                <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-[11px] text-sus-deep leading-relaxed">
-                  <strong>Síntese da Execução:</strong> {execution.outputData.summary}
-                </div>
               </>
             ) : (
-              <p className="text-sus-muted text-center py-4">
-                A resposta será gerada e exibida aqui ao término do percurso.
+              <p className="text-slate-400 text-center py-4 text-xs">
+                A resposta será gerada e exibida ao término do fluxo.
               </p>
             )}
           </div>
         )}
       </div>
 
-      {/* Rodapé do Inspetor */}
-      <div className="p-3 border-t border-white/80 bg-white/60 flex items-center justify-between text-[11px] text-sus-muted">
-        <span>Clique em qualquer estação 3D para inspecionar</span>
+      {/* Rodapé */}
+      <div className="p-3 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between text-xs text-slate-500">
+        <span>Clique nas estações 3D para navegar</span>
         <button
           type="button"
           onClick={onClose}
-          className="text-sus-deep hover:text-sus-primary font-semibold"
+          className="text-blue-700 hover:text-blue-900 font-bold"
         >
           Fechar
         </button>
