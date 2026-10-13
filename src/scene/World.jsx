@@ -2,9 +2,8 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
-import BrasiliaArchitecture from './BrasiliaArchitecture';
+import CityEnvironment from './CityEnvironment';
 import Ground from './Ground';
-import AmbientEnvironment from './AmbientEnvironment';
 import Station from './Station';
 import DataPath from './DataPath';
 import FlowParticle from './FlowParticle';
@@ -44,60 +43,57 @@ export default function World({
           // Mantém seleção intencional sem deselecionar acidentalmente
         }}
       >
-        {/* Fundo e neblina do Lago Paranoá / Cerrado tecnológico */}
-        <color attach="background" args={['#f4f8fe']} />
-        <fog attach="fog" args={['#f4f8fe', 90, 260]} />
+        {/* Céu diurno e neblina limpa da cidade */}
+        <color attach="background" args={['#e6f0fa']} />
+        <fog attach="fog" args={['#e6f0fa', 100, 260]} />
 
-        {/* 1. Iluminação de estúdio profissional (Key, Fill, Rim & Ambient) */}
-        <ambientLight intensity={0.72} />
+        {/* Iluminação diurna cinematográfica estilo jogo */}
+        <ambientLight intensity={0.78} />
         <hemisphereLight
           skyColor="#ffffff"
-          groundColor="#dbeafe"
+          groundColor="#cbd5e1"
           intensity={0.65}
         />
-        {/* Key Light com sombras nítidas e suaves */}
+        {/* Sol diurno com sombras nítidas de alta definição */}
         <directionalLight
-          position={[16, 26, 14]}
-          intensity={1.4}
+          position={[32, 45, 24]}
+          intensity={1.45}
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
           shadow-camera-near={0.5}
-          shadow-camera-far={70}
-          shadow-camera-left={-20}
-          shadow-camera-right={20}
-          shadow-camera-top={20}
-          shadow-camera-bottom={-20}
+          shadow-camera-far={120}
+          shadow-camera-left={-30}
+          shadow-camera-right={30}
+          shadow-camera-top={30}
+          shadow-camera-bottom={-30}
           shadow-bias={-0.0001}
         />
-        {/* Rim Light / Contra-luz azul-gelo para realçar colunas e chanfros */}
+        {/* Rim Light suave azul para destacar arestas dos edifícios */}
         <directionalLight
-          position={[-16, 18, -14]}
-          intensity={0.8}
+          position={[-24, 25, -20]}
+          intensity={0.7}
           color="#93c5fd"
         />
-        {/* Fill frontal suave */}
+        {/* Luz de preenchimento frontal */}
         <directionalLight
-          position={[0, 12, 22]}
+          position={[0, 16, 26]}
           intensity={0.35}
           color="#e0e7ff"
         />
 
         <Suspense fallback={null}>
-          {/* Ambiente contextual: lâmina líquida reflexiva, pilares e partículas */}
-          <AmbientEnvironment />
+          {/* Cidade 3D viva, diurna e procedural ao redor do campus */}
+          <CityEnvironment />
 
-          {/* Monumentos de Brasília: Colunata Alvorada, Congresso, Catedral, Ponte JK e Burle Marx */}
-          <BrasiliaArchitecture />
-
-          {/* Piso arquitetônico e praça com Cruz da Saúde SUS Digital */}
+          {/* Praça central do campus Susana AI */}
           <Ground />
 
           {/* Sombras de contato suaves no piso da esplanada */}
           <ContactShadows
-            position={[0, 0.015, 0]}
+            position={[0, 0.045, 0]}
             opacity={0.16}
-            scale={25}
+            scale={28}
             blur={2.0}
             far={3}
             color="#1e3a8a"
